@@ -49,7 +49,7 @@ use Udflow\util\Saida;
         <circle class="pulse-dot" cx="28" cy="14" r="2" fill="#E8ECF6"/>
       </svg>
       <h1 class="font-display font-semibold text-2xl tracking-tight">UD<span class="text-grad">Flow</span></h1>
-      <p class="text-tsecondary text-sm mt-1">Central de automações UDLOG</p>
+      <p class="text-tsecondary text-sm mt-1">Automações UDLOG</p>
     </div>
 
     <?php if (!empty($_SESSION['flash_erro'])): ?>
@@ -81,7 +81,6 @@ use Udflow\util\Saida;
       </div>
       <p class="text-center text-xs text-tmuted mt-5">Esqueceu sua senha? <a href="index.php?pagina=esqueci-senha" class="text-flow font-medium hover:underline">Redefinir agora</a></p>
     </form>
-    <p class="text-center text-xs text-tmuted mt-6">UDLOG © <?= date('Y') ?></p>
   </div>
 </div>
 

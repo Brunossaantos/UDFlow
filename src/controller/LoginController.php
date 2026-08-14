@@ -5,6 +5,7 @@ namespace Udflow\controller;
 use Udflow\rn\AutenticacaoRn;
 use Udflow\rn\RedefinicaoSenhaRn;
 use Udflow\util\Csrf;
+use Udflow\util\Mailer;
 use Udflow\util\ControleAcesso;
 
 class LoginController
@@ -113,8 +114,13 @@ class LoginController
         // mas a tela mostra sempre a mesma mensagem de sucesso, pra
         // não revelar se aquele e-mail está cadastrado ou não
         if ($codigo !== null) {
-            // TODO: chamar o serviço de e-mail (SMTP configurado no .env)
-            // com o código pro destinatário
+            Mailer::enviar(
+                $email,
+                'Seu código de redefinição de senha - UDFlow',
+                '<p>Você pediu pra redefinir sua senha no UDFlow. Seu código de verificação é:</p>'
+                    . '<p style="font-size:28px;font-weight:bold;letter-spacing:6px;">' . htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') . '</p>'
+                    . '<p>Ele expira em 15 minutos. Se você não pediu isso, pode ignorar este e-mail.</p>'
+            );
         }
 
         $_SESSION['email_redefinicao'] = $email;

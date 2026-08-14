@@ -55,7 +55,7 @@ $statusLabel = [
       <label class="block text-xs font-medium text-tsecondary mb-1.5">E-mail de destino</label>
       <input id="campo-email" type="email" placeholder="<?= $avisoEmailUdlog ? 'nome@udlog.com' : 'nome@empresa.com' ?>" class="w-full bg-elevated border border-bord rounded-lg px-3 py-2.5 text-sm glow-focus transition">
       <?php if ($avisoEmailUdlog): ?>
-        <p class="text-[11px] text-tmuted mt-1">Somente e-mails @udlog</p>
+        <!-- <p class="text-[11px] text-tmuted mt-1">Somente e-mails @udlog</p> -->
       <?php endif; ?>
     </div>
     <button id="botao-disparar" class="grad-flow text-[#04342C] font-semibold text-sm rounded-lg px-5 py-2.5 whitespace-nowrap hover:opacity-90 transition h-[42px]"><?= Saida::e($rotuloBotao) ?></button>

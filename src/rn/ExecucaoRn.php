@@ -74,6 +74,10 @@ class ExecucaoRn
             $emailDestino
         );
 
+        $configKpi = $this->clienteDao->buscarKpiConfig($clienteId);
+
+        $logoUrl = trim((string) ($configKpi['logo_url'] ?? ''));
+
         $n8nRn = new N8nRn();
         $enviado = $n8nRn->dispararWebhook($automacao['webhook_url'], [
             'execucaoId' => $execucaoId,
@@ -81,6 +85,7 @@ class ExecucaoRn
             'clienteNome' => $cliente->nomeExibicao,
             'unidadeCodigo' => $cliente->unidadeNome,
             'emailDestino' => $emailDestino,
+            'logoUrl' => $logoUrl,
             'modo' => 'MANUAL',
         ]);
 
