@@ -1,0 +1,14 @@
+{
+    "name": "udlog/udflow",
+    "description": "UDFlow - central de automacoes da UDLOG",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Udflow\\": "src/"
+        }
+    }
+}
