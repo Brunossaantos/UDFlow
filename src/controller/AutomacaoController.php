@@ -11,7 +11,7 @@ use Udflow\util\ControleAcesso;
 /**
  * AutomacaoController
  *
- * Base comum das telas de execução (KPI, Mão de Obra Batida,
+ * Base comum das telas de execução (KPI, Programação semanal,
  * Estadia). Cada uma só precisa dizer qual é a sua "chave" (o nome
  * dela em tb_automacoes) e qual Rn usar - o resto do fluxo
  * (autocomplete, disparo manual, listagem de "minhas solicitações")

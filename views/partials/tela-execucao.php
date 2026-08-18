@@ -2,7 +2,7 @@
 /**
  * partials/tela-execucao.php
  *
- * As 3 automações (KPI, Mão de Obra Batida, Estadia) têm exatamente
+ * As 3 automações (KPI, Programação semanal, Estadia) têm exatamente
  * a mesma tela: busca de cliente, e-mail, botão de disparo e a
  * lista de "minhas solicitações". Em vez de repetir esse HTML 3
  * vezes, cada view (kpi.php, mao-obra.php, estadia.php) só define
@@ -140,8 +140,7 @@ $statusLabel = [
           class="item-cliente w-full flex items-center gap-3 px-4 py-2.5 hover:bg-surface transition text-left">
           <div class="w-7 h-7 rounded-md shrink-0 bg-surface border border-bord flex items-center justify-center text-[10px] font-bold text-tsecondary">${c.nome.slice(0, 2).toUpperCase()}</div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium truncate">${c.nome}</p>
-            <p class="text-[11px] text-tmuted font-mono">${c.codigo}</p>
+            <p class="text-sm font-medium truncate">${c.nome}</p>           
           </div>
           <span class="text-[10px] bg-surface border border-bord px-2 py-0.5 rounded-full text-tsecondary shrink-0">${c.unidade}</span>
         </button>`).join('');

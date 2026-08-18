@@ -60,9 +60,15 @@ class ClienteRn
             return ['sucesso' => false, 'mensagem' => 'Já existe cliente com esse código ou CNPJ.', 'clienteId' => null];
         }
 
+        $codigoTalent = trim($dados['codigo_talent'] ?? '') ?: null;
+        if ($codigoTalent !== null && $this->clienteDao->existeCodigoTalent((int) $dados['unidade_id'], $codigoTalent)) {
+            return ['sucesso' => false, 'mensagem' => 'Já existe outro cliente com esse código do Talent nessa unidade.', 'clienteId' => null];
+        }
+
         $clienteId = $this->clienteDao->criar(
             (int) $dados['unidade_id'],
             $dados['codigo_cliente'],
+            $codigoTalent,
             $dados['razao_social'],
             $dados['nome_exibicao'],
             $cnpj,
@@ -93,10 +99,16 @@ class ClienteRn
             return ['sucesso' => false, 'mensagem' => 'Já existe outro cliente com esse código ou CNPJ.'];
         }
 
+        $codigoTalent = trim($dados['codigo_talent'] ?? '') ?: null;
+        if ($codigoTalent !== null && $this->clienteDao->existeCodigoTalent((int) $dados['unidade_id'], $codigoTalent, $id)) {
+            return ['sucesso' => false, 'mensagem' => 'Já existe outro cliente com esse código do Talent nessa unidade.'];
+        }
+
         $this->clienteDao->atualizar(
             $id,
             (int) $dados['unidade_id'],
             $dados['codigo_cliente'],
+            $codigoTalent,
             $dados['razao_social'],
             $dados['nome_exibicao'],
             $cnpj,

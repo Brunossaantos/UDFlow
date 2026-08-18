@@ -39,7 +39,7 @@ mudar.
 
 ## Por que existe um `AutomacaoController` abstrato
 
-KPI, Mão de Obra Batida e Estadia têm exatamente o mesmo fluxo:
+KPI, Programação semanal e Estadia têm exatamente o mesmo fluxo:
 buscar cliente, digitar e-mail, disparar. Em vez de copiar e colar o
 mesmo código 3 vezes (e esquecer de corrigir em algum lugar quando
 mudar algo), o fluxo comum mora em `AutomacaoController` e cada
@@ -105,7 +105,7 @@ Cinco scripts na raiz do projeto, sem precisar de PHPUnit - só `php nome-do-arq
 - `teste_carregamento_classes.php` - carrega todas as classes do projeto e confere herança (AutomacaoController abstrato, as 3 automações implementando tudo certo, KpiExecucaoRn sobrescrevendo a validação de e-mail). Também sem banco.
 - `teste_renderizar_views.php` - renderiza de verdade as telas de login/redefinição de senha (essas não dependem de banco).
 - `teste_fluxo_completo.php` - **precisa de um MariaDB de verdade** (schema aplicado, `.env` configurado). Cria usuário, testa login, troca de senha, permissões (super_admin vs comum), cliente, cronograma, execução manual (com e sem webhook configurado) e redefinição de senha por código - tudo contra o banco real.
-- `teste_views_logadas.php` - também precisa de banco. Renderiza Home, KPI, Mão de Obra Batida e as 5 telas de admin com dados reais.
+- `teste_views_logadas.php` - também precisa de banco. Renderiza Home, KPI, Programação semanal e as 5 telas de admin com dados reais.
 
 Rodei todos os cinco contra um MariaDB de teste antes de fechar essa etapa: **165 conferências, 0 falhas**. Isso pegou 4 bugs reais que só apareciam com banco de verdade (documentados abaixo) - vale rodar de novo sempre que mexer em Dao ou Rn.
 

@@ -19,7 +19,7 @@ $icones = [
 ?>
 
 <h1 class="font-display font-semibold text-xl mb-1">Automações</h1>
-<p class="text-tsecondary text-sm mb-6">Controla o que aparece na sidebar de cada pessoa. "Visível pra usuários" é a chave que hoje mantém Mão de Obra Batida e Estadia restritas a admins.</p>
+<p class="text-tsecondary text-sm mb-6">Controla o que aparece na sidebar de cada pessoa. "Visível pra usuários" é a chave que hoje mantém Programação semanal e Estadia restritas a admins.</p>
 
 <div class="space-y-3">
   <?php foreach ($automacoes as $automacao): ?>

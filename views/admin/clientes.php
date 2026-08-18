@@ -1,4 +1,5 @@
 <?php
+
 /**
  * views/admin/clientes.php
  * Renderizado por AdminClienteController::tela()
@@ -15,7 +16,9 @@ require __DIR__ . '/../partials/cabecalho.php';
 <div class="flex items-center justify-between mb-1">
   <h1 class="font-display font-semibold text-xl">Clientes</h1>
   <button onclick="abrirDrawerCliente()" class="grad-flow text-[#04342C] font-semibold text-xs rounded-lg px-4 py-2 flex items-center gap-1.5">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Novo cliente
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <path d="M12 5v14M5 12h14" />
+    </svg>Novo cliente
   </button>
 </div>
 <p class="text-tsecondary text-sm mb-5">Cadastro único, usado pelas 3 automações. Logo e cores de capa se aplicam somente ao KPI.</p>
@@ -31,36 +34,39 @@ require __DIR__ . '/../partials/cabecalho.php';
 </form>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-  <?php foreach ($clientesComDetalhes as $item): $c = $item['cliente']; $kpi = $item['kpiConfig']; ?>
+  <?php foreach ($clientesComDetalhes as $item): $c = $item['cliente'];
+    $kpi = $item['kpiConfig']; ?>
     <?php
-      $corPrimaria = $kpi['cor_primaria'] ?? '#0B6FA4';
-      $corSecundaria = $kpi['cor_secundaria'] ?? '#64748B';
-      $automacoesJson = htmlspecialchars(json_encode($item['automacoesAtivas']), ENT_QUOTES, 'UTF-8');
+    $corPrimaria = $kpi['cor_primaria'] ?? '#0B6FA4';
+    $corSecundaria = $kpi['cor_secundaria'] ?? '#64748B';
+    $automacoesJson = htmlspecialchars(json_encode($item['automacoesAtivas']), ENT_QUOTES, 'UTF-8');
     ?>
     <div class="bg-surface border border-bord rounded-xl overflow-hidden hover:border-flow/40 transition group">
       <div class="h-20 relative flex items-end p-3" style="background: linear-gradient(135deg, <?= Saida::e($corPrimaria) ?> 0%, <?= Saida::e($corSecundaria) ?> 100%);">
         <p class="text-white font-display font-semibold text-sm relative z-10"><?= Saida::e($c->nomeExibicao) ?></p>
         <span class="absolute top-3 right-3 text-[10px] bg-black/25 text-white px-2 py-0.5 rounded-full"><?= Saida::e($c->unidadeNome) ?></span>
       </div>
-      <div class="p-3.5 flex items-center justify-between">
-        <span class="text-tmuted text-xs font-mono"><?= Saida::e($c->codigoCliente) ?></span>
+      <div class="p-3.5 flex items-center justify-end">
         <button
           onclick='abrirDrawerCliente(<?= json_encode([
-              'id' => $c->id,
-              'unidadeId' => $c->unidadeId,
-              'codigo' => $c->codigoCliente,
-              'razaoSocial' => $c->razaoSocial,
-              'nomeExibicao' => $c->nomeExibicao,
-              'cnpj' => $c->cnpj,
-              'emailResponsavel' => $c->emailResponsavel,
-              'ativo' => $c->ativo,
-              'logoUrl' => $kpi['logo_url'] ?? '',
-              'corPrimaria' => $corPrimaria,
-              'corSecundaria' => $corSecundaria,
-              'automacoes' => $item['automacoesAtivas'],
-          ]) ?>)'
+                                        'id' => $c->id,
+                                        'unidadeId' => $c->unidadeId,
+                                        'codigo' => $c->codigoCliente,
+                                        'codigoTalent' => $c->codigoTalent,
+                                        'razaoSocial' => $c->razaoSocial,
+                                        'nomeExibicao' => $c->nomeExibicao,
+                                        'cnpj' => $c->cnpj,
+                                        'emailResponsavel' => $c->emailResponsavel,
+                                        'ativo' => $c->ativo,
+                                        'logoUrl' => $kpi['logo_url'] ?? '',
+                                        'corPrimaria' => $corPrimaria,
+                                        'corSecundaria' => $corSecundaria,
+                                        'automacoes' => $item['automacoesAtivas'],
+                                      ]) ?>)'
           class="text-tsecondary hover:text-flow transition opacity-0 group-hover:opacity-100">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
         </button>
       </div>
     </div>
@@ -72,7 +78,9 @@ require __DIR__ . '/../partials/cabecalho.php';
   <div class="w-full max-w-md bg-elevated h-full border-l border-bord p-6 overflow-y-auto">
     <div class="flex items-center justify-between mb-6">
       <h3 id="drawer-titulo" class="font-display font-semibold text-base">Novo cliente</h3>
-      <button onclick="fecharDrawerCliente()" class="text-tmuted hover:text-tprimary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button onclick="fecharDrawerCliente()" class="text-tmuted hover:text-tprimary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg></button>
     </div>
 
     <div id="preview-capa" class="rounded-xl p-5 mb-6 relative overflow-hidden h-28 flex flex-col justify-end" style="background: linear-gradient(135deg, #0B6FA4 0%, #64748B 100%);">
@@ -102,6 +110,11 @@ require __DIR__ . '/../partials/cabecalho.php';
             <label class="block text-xs font-medium text-tsecondary mb-1.5">CNPJ</label>
             <input id="input-cnpj" type="text" name="cnpj" required placeholder="00.000.000/0000-00" class="w-full bg-surface border border-bord rounded-lg px-3 py-2.5 text-sm font-mono glow-focus">
           </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-tsecondary mb-1.5">Código no Talent <span class="text-tmuted font-normal">· só Estadia</span></label>
+          <input id="input-codigo-talent" type="text" name="codigo_talent" placeholder="Ex: ALLIANCE" class="w-full bg-surface border border-bord rounded-lg px-3 py-2.5 text-sm font-mono glow-focus">
+          <p class="text-[11px] text-tmuted mt-1">Como o cliente aparece no campo "depositante" da API do Talent. Sem isso, a Estadia não dispara pra esse cliente.</p>
         </div>
         <div>
           <label class="block text-xs font-medium text-tsecondary mb-1.5">Unidade</label>
@@ -174,6 +187,7 @@ require __DIR__ . '/../partials/cabecalho.php';
       document.getElementById('input-nome-exibicao').value = dados.nomeExibicao;
       document.getElementById('input-razao-social').value = dados.razaoSocial;
       document.getElementById('input-codigo').value = dados.codigo;
+       document.getElementById('input-codigo-talent').value = dados.codigoTalent || '';
       document.getElementById('input-cnpj').value = dados.cnpj;
       document.getElementById('input-unidade').value = dados.unidadeId;
       document.getElementById('input-email-responsavel').value = dados.emailResponsavel || '';

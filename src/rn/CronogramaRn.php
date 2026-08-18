@@ -32,6 +32,11 @@ class CronogramaRn
         return $this->cronogramaDao->listar($filtros);
     }
 
+    public function contar(array $filtros = []): int
+    {
+        return $this->cronogramaDao->contar($filtros);
+    }
+
     public function alternarAtivo(int $id, bool $ativo, int $executorId): void
     {
         $this->cronogramaDao->definirAtivo($id, $ativo);
@@ -118,5 +123,43 @@ class CronogramaRn
             $item['email_responsavel'],
             $executorId
         );
+    }
+
+    /**
+     * @return array{sucesso: bool, mensagem: ?string}
+     */
+    public function atualizar(int $id, string $frequencia, ?string $diasSemana, ?int $diaMes, string $horario, int $executorId): array
+    {
+        if (!in_array($frequencia, ['diaria', 'mensal'], true)) {
+            return ['sucesso' => false, 'mensagem' => 'Escolhe a frequência: diária ou mensal.'];
+        }
+
+        if ($frequencia === 'mensal') {
+            if ($diaMes === null || $diaMes < 1 || $diaMes > 31) {
+                return ['sucesso' => false, 'mensagem' => 'Informa um dia do mês válido (1 a 31).'];
+            }
+        } else {
+            $diaMes = null;
+        }
+
+        $diasSemana = $this->normalizarDiasSemana($diasSemana);
+        if ($diasSemana === false) {
+            return ['sucesso' => false, 'mensagem' => 'Dias da semana inválidos.'];
+        }
+
+        if (!preg_match('/^([01]\d|2[0-3]):([0-5]\d)/', $horario)) {
+            return ['sucesso' => false, 'mensagem' => 'Informa um horário válido (HH:MM).'];
+        }
+        $horario = substr($horario, 0, 5) . ':00';
+
+        $this->cronogramaDao->atualizar($id, $frequencia, $diasSemana, $diaMes, $horario);
+        $this->logAdminDao->registrar($executorId, 'cronograma.atualizado', 'tb_cronograma', $id, null);
+
+        return ['sucesso' => true, 'mensagem' => null];
+    }
+
+    public function buscarPorId(int $id): array|null
+    {
+        return $this->cronogramaDao->buscarPorId($id);
     }
 }

@@ -16,10 +16,26 @@ class AdminCronogramaController
     {
         ControleAcesso::exigirAdminDeAlgumaAutomacao();
 
+        $pagina = (int) ($_GET['p'] ?? 1);
+        if ($pagina < 1) $pagina = 1;
+        $itensPorPagina = 10;
+        $offset = ($pagina - 1) * $itensPorPagina;
+
         $filtros = array_filter([
             'automacao_id' => $_GET['automacao_id'] ?? null,
             'unidade_id' => $_GET['unidade_id'] ?? null,
+            'limit' => $itensPorPagina,
+            'offset' => $offset,
         ]);
+
+        $filtrosSemPaginacao = array_filter([
+            'automacao_id' => $_GET['automacao_id'] ?? null,
+            'unidade_id' => $_GET['unidade_id'] ?? null,
+        ]);
+
+        $totalRegistros = (new CronogramaRn())->contar($filtrosSemPaginacao);
+        $totalPaginas = (int) ceil($totalRegistros / $itensPorPagina);
+        $paginaAtual = $pagina;
 
         $cronograma = (new CronogramaRn())->listar($filtros);
         $automacoes = array_filter((new AutomacaoDao())->listarTodas(), fn($a) => $a['possui_agendamento']);
@@ -105,6 +121,44 @@ class AdminCronogramaController
         $resultado = (new CronogramaRn())->executarAgora($id, ControleAcesso::usuarioLogadoId());
 
         Saida::json($resultado, $resultado['sucesso'] ? 200 : 422);
+    }
+
+    public function editar(): void
+    {
+        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+
+        if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
+            $this->voltarComErro('Sessão expirada, atualiza a página.');
+        }
+
+        $cronogramaId = (int) ($_POST['cronograma_id'] ?? 0);
+        $frequencia = $_POST['frequencia'] ?? '';
+        $diaMes = $frequencia === 'mensal' ? (int) ($_POST['dia_mes'] ?? 0) : null;
+        $horario = trim($_POST['horario'] ?? '');
+
+        $diasMarcados = array_map('intval', $_POST['dias_semana'] ?? []);
+        $diasSemana = !empty($diasMarcados) ? implode(',', $diasMarcados) : null;
+
+        if ($cronogramaId <= 0) {
+            $this->voltarComErro('Item inválido.');
+        }
+
+        $resultado = (new CronogramaRn())->atualizar(
+            $cronogramaId,
+            $frequencia,
+            $diasSemana,
+            $diaMes,
+            $horario,
+            ControleAcesso::usuarioLogadoId()
+        );
+
+        if (!$resultado['sucesso']) {
+            $this->voltarComErro($resultado['mensagem']);
+        }
+
+        $_SESSION['flash_sucesso'] = 'Agendamento atualizado.';
+        header('Location: index.php?pagina=admin-cronograma');
+        exit;
     }
 
     private function voltarComErro(string $mensagem): void

@@ -4,11 +4,11 @@ namespace Udflow\controller;
 
 use Udflow\rn\ExecucaoRn;
 
-class MaoObraController extends AutomacaoController
+class ProgramacaoSemanalController extends AutomacaoController
 {
     protected function chave(): string
     {
-        return 'mao_obra_batida';
+        return 'programacao_semanal';
     }
 
     protected function rn(): ExecucaoRn
@@ -18,6 +18,6 @@ class MaoObraController extends AutomacaoController
 
     protected function view(): string
     {
-        return 'mao-obra.php';
+        return 'programacao-semanal.php';
     }
 }

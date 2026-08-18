@@ -7,7 +7,7 @@
  */
 
 $paginaAtiva = 'kpi';
-$tituloPagina = 'KPI · Relatórios Anuais';
+$tituloPagina = 'KPI';
 require __DIR__ . '/partials/cabecalho.php';
 
 $chaveRota = 'kpi';

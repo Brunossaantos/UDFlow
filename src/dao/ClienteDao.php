@@ -103,20 +103,40 @@ class ClienteDao
         return ((int) $consulta->fetchColumn()) > 0;
     }
 
+        public function existeCodigoTalent(int $unidadeId, string $codigoTalent, ?int $ignorarId = null): bool
+    {
+        $sql = 'SELECT COUNT(*) FROM tb_clientes WHERE unidade_id = :unidade_id AND codigo_talent = :codigo_talent';
+        if ($ignorarId !== null) {
+            $sql .= ' AND id != :ignorar_id';
+        }
+
+        $consulta = $this->pdo->prepare($sql);
+        $consulta->bindValue(':unidade_id', $unidadeId, PDO::PARAM_INT);
+        $consulta->bindValue(':codigo_talent', $codigoTalent, PDO::PARAM_STR);
+        if ($ignorarId !== null) {
+            $consulta->bindValue(':ignorar_id', $ignorarId, PDO::PARAM_INT);
+        }
+        $consulta->execute();
+
+        return ((int) $consulta->fetchColumn()) > 0;
+    }
+
     public function criar(
         int $unidadeId,
         string $codigo,
+        ?string $codigoTalent,
         string $razaoSocial,
         string $nomeExibicao,
         string $cnpj,
         ?string $emailResponsavel
     ): int {
-        $sql = 'INSERT INTO tb_clientes (unidade_id, codigo_cliente, razao_social, nome_exibicao, cnpj, email_responsavel)
-                VALUES (:unidade_id, :codigo, :razao_social, :nome_exibicao, :cnpj, :email_responsavel)';
+        $sql = 'INSERT INTO tb_clientes (unidade_id, codigo_cliente, codigo_talent, razao_social, nome_exibicao, cnpj, email_responsavel)
+                VALUES (:unidade_id, :codigo, :codigo_talent, :razao_social, :nome_exibicao, :cnpj, :email_responsavel)';
 
         $comando = $this->pdo->prepare($sql);
         $comando->bindValue(':unidade_id', $unidadeId, PDO::PARAM_INT);
         $comando->bindValue(':codigo', $codigo, PDO::PARAM_STR);
+        $comando->bindValue(':codigo_talent', $codigoTalent, $codigoTalent === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando->bindValue(':razao_social', $razaoSocial, PDO::PARAM_STR);
         $comando->bindValue(':nome_exibicao', $nomeExibicao, PDO::PARAM_STR);
         $comando->bindValue(':cnpj', $cnpj, PDO::PARAM_STR);
@@ -130,6 +150,7 @@ class ClienteDao
         int $id,
         int $unidadeId,
         string $codigo,
+        ?string $codigoTalent,
         string $razaoSocial,
         string $nomeExibicao,
         string $cnpj,
@@ -139,6 +160,7 @@ class ClienteDao
         $sql = 'UPDATE tb_clientes
                 SET unidade_id = :unidade_id,
                     codigo_cliente = :codigo,
+                    codigo_talent = :codigo_talent,
                     razao_social = :razao_social,
                     nome_exibicao = :nome_exibicao,
                     cnpj = :cnpj,
@@ -149,6 +171,7 @@ class ClienteDao
         $comando = $this->pdo->prepare($sql);
         $comando->bindValue(':unidade_id', $unidadeId, PDO::PARAM_INT);
         $comando->bindValue(':codigo', $codigo, PDO::PARAM_STR);
+        $comando->bindValue(':codigo_talent', $codigoTalent, $codigoTalent === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando->bindValue(':razao_social', $razaoSocial, PDO::PARAM_STR);
         $comando->bindValue(':nome_exibicao', $nomeExibicao, PDO::PARAM_STR);
         $comando->bindValue(':cnpj', $cnpj, PDO::PARAM_STR);

@@ -29,7 +29,7 @@ CREATE TABLE tb_unidades (
 -- ---------------------------------------------------------------------
 -- 2. AUTOMAÇÕES
 -- Cada linha aqui é um item da sidebar. `visivel_para_usuarios` é o
--- interruptor que hoje deixa Mão de Obra Batida e Estadia visíveis
+-- interruptor que hoje deixa Programação semanal e Estadia visíveis
 -- só pra quem é admin (super_admin sempre enxerga tudo, independente
 -- deste campo).
 -- ---------------------------------------------------------------------
@@ -178,7 +178,7 @@ CREATE TABLE tb_execucoes (
 
 -- ---------------------------------------------------------------------
 -- 9. CRONOGRAMA
--- Espelha o agendamento automático de Mão de Obra Batida e Estadia
+-- Espelha o agendamento automático de Programação semanal e Estadia
 -- pra tela "Administração · Cronograma". IMPORTANTE: por enquanto
 -- esta tabela é só visualização/controle no UDFlow — ela NÃO
 -- reprograma os cron triggers dentro do n8n sozinha. Ativar/pausar
@@ -311,12 +311,12 @@ INSERT INTO tb_unidades (codigo, nome) VALUES
     ('MAUA_I', 'Mauá I'),
     ('MAUA_II', 'Mauá II');
 
--- visivel_para_usuarios = 0 em Mão de Obra Batida e Estadia
+-- visivel_para_usuarios = 0 em Programação semanal e Estadia
 -- implementa a regra combinada: só admin/super_admin veem essas
 -- duas automações por enquanto.
 INSERT INTO tb_automacoes (chave, nome, icone, rota, permite_execucao_manual, possui_agendamento, visivel_para_usuarios, ordem_menu) VALUES
     ('kpi', 'KPI · Relatórios Anuais', 'bar-chart', '/automacoes/kpi', 1, 0, 1, 10),
-    ('mao_obra_batida', 'Mão de Obra Batida', 'clock', '/automacoes/mao-obra-batida', 1, 1, 0, 20),
+    ('mao_obra_batida', 'Programação semanal', 'clock', '/automacoes/mao-obra-batida', 1, 1, 0, 20),
     ('estadia', 'Estadia', 'truck', '/automacoes/estadia', 1, 1, 0, 30);
 
 -- Observação sobre credenciais (webhook_token, SMTP, DB) —

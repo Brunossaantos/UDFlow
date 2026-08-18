@@ -42,9 +42,17 @@ class CronogramaDao
                 WHERE ' . implode(' AND ', $condicoes) . '
                 ORDER BY cr.dia_mes, cr.horario';
 
+        if (!empty($filtros['limit'])) {
+            $sql .= ' LIMIT :limit OFFSET :offset';
+        }
+
         $consulta = $this->pdo->prepare($sql);
         foreach ($parametros as $chave => $valor) {
             $consulta->bindValue($chave, $valor, PDO::PARAM_INT);
+        }
+        if (!empty($filtros['limit'])) {
+            $consulta->bindValue(':limit', $filtros['limit'], PDO::PARAM_INT);
+            $consulta->bindValue(':offset', $filtros['offset'] ?? 0, PDO::PARAM_INT);
         }
         $consulta->execute();
 
@@ -109,6 +117,48 @@ class CronogramaDao
         $consulta->execute();
 
         return ((int) $consulta->fetchColumn()) > 0;
+    }
+
+    public function contar(array $filtros = []): int
+    {
+        $condicoes = ['1 = 1'];
+        $parametros = [];
+
+        if (!empty($filtros['automacao_id'])) {
+            $condicoes[] = 'cr.automacao_id = :automacao_id';
+            $parametros[':automacao_id'] = $filtros['automacao_id'];
+        }
+        if (!empty($filtros['unidade_id'])) {
+            $condicoes[] = 'c.unidade_id = :unidade_id';
+            $parametros[':unidade_id'] = $filtros['unidade_id'];
+        }
+
+        $sql = 'SELECT COUNT(*) as total FROM tb_cronograma cr
+                JOIN tb_clientes c ON c.id = cr.cliente_id
+                WHERE ' . implode(' AND ', $condicoes);
+
+        $consulta = $this->pdo->prepare($sql);
+        foreach ($parametros as $chave => $valor) {
+            $consulta->bindValue($chave, $valor, PDO::PARAM_INT);
+        }
+        $consulta->execute();
+
+        $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+        return (int) ($resultado['total'] ?? 0);
+    }
+
+    public function atualizar(int $id, string $frequencia, ?string $diasSemana, ?int $diaMes, string $horario): void
+    {
+        $sql = 'UPDATE tb_cronograma SET frequencia = :frequencia, dias_semana = :dias_semana, dia_mes = :dia_mes, horario = :horario WHERE id = :id';
+
+        $comando = $this->pdo->prepare($sql);
+        $comando->bindValue(':frequencia', $frequencia, PDO::PARAM_STR);
+        $comando->bindValue(':dias_semana', $diasSemana, $diasSemana === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $comando->bindValue(':dia_mes', $diaMes, $diaMes === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $comando->bindValue(':horario', $horario, PDO::PARAM_STR);
+        $comando->bindValue(':id', $id, PDO::PARAM_INT);
+
+        $comando->execute();
     }
 
     /**

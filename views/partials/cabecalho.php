@@ -27,8 +27,9 @@ $tituloPagina = $tituloPagina ?? 'UDFlow';
 
 $iconesPorAutomacao = [
     'kpi' => '<path d="M4 20V10M11 20V4M18 20v-7"/>',
-    'mao_obra_batida' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+    'programacao_semanal' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
     'estadia' => '<rect x="1" y="8" width="12" height="8" rx="1"/><path d="M13 11h4l3 3v2h-7z"/><circle cx="5.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/>',
+    'relatorio_avarias' => '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/>',
 ];
 ?>
 <!DOCTYPE html>

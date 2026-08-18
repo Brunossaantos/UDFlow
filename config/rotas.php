@@ -19,14 +19,16 @@
 use Udflow\controller\LoginController;
 use Udflow\controller\HomeController;
 use Udflow\controller\KpiController;
-use Udflow\controller\MaoObraController;
+use Udflow\controller\ProgramacaoSemanalController;
 use Udflow\controller\EstadiaController;
+use Udflow\controller\RelatorioAvariasController;
 use Udflow\controller\CallbackController;
 use Udflow\controller\AdminUsuarioController;
 use Udflow\controller\AdminClienteController;
 use Udflow\controller\AdminAutomacaoController;
 use Udflow\controller\AdminLogController;
 use Udflow\controller\AdminCronogramaController;
+use Udflow\controller\ChatController;
 
 return [
 
@@ -54,15 +56,20 @@ return [
     'kpi-clientes' => ['auth' => true, 'papel' => ['automacao' => 'kpi', 'minimo' => 'usuario'], 'controller' => KpiController::class, 'acao' => 'buscarClientes'],
     'kpi-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'kpi', 'minimo' => 'usuario'], 'controller' => KpiController::class, 'acao' => 'enviar'],
 
-    // --- Mão de Obra Batida ---
-    'mao-obra' => ['auth' => true, 'papel' => ['automacao' => 'mao_obra_batida', 'minimo' => 'usuario'], 'controller' => MaoObraController::class, 'acao' => 'tela'],
-    'mao-obra-clientes' => ['auth' => true, 'papel' => ['automacao' => 'mao_obra_batida', 'minimo' => 'usuario'], 'controller' => MaoObraController::class, 'acao' => 'buscarClientes'],
-    'mao-obra-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'mao_obra_batida', 'minimo' => 'usuario'], 'controller' => MaoObraController::class, 'acao' => 'enviar'],
+    // --- Programação semanal ---
+    'programacao-semanal' => ['auth' => true, 'papel' => ['automacao' => 'programacao_semanal', 'minimo' => 'usuario'], 'controller' => ProgramacaoSemanalController::class, 'acao' => 'tela'],
+    'programacao-semanal-clientes' => ['auth' => true, 'papel' => ['automacao' => 'programacao_semanal', 'minimo' => 'usuario'], 'controller' => ProgramacaoSemanalController::class, 'acao' => 'buscarClientes'],
+    'programacao-semanal-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'programacao_semanal', 'minimo' => 'usuario'], 'controller' => ProgramacaoSemanalController::class, 'acao' => 'enviar'],
 
     // --- Estadia ---
     'estadia' => ['auth' => true, 'papel' => ['automacao' => 'estadia', 'minimo' => 'usuario'], 'controller' => EstadiaController::class, 'acao' => 'tela'],
     'estadia-clientes' => ['auth' => true, 'papel' => ['automacao' => 'estadia', 'minimo' => 'usuario'], 'controller' => EstadiaController::class, 'acao' => 'buscarClientes'],
     'estadia-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'estadia', 'minimo' => 'usuario'], 'controller' => EstadiaController::class, 'acao' => 'enviar'],
+
+    // --- Relatório de Avarias ---
+    'relatorio-avarias' => ['auth' => true, 'papel' => ['automacao' => 'relatorio_avarias', 'minimo' => 'usuario'], 'controller' => RelatorioAvariasController::class, 'acao' => 'tela'],
+    'relatorio-avarias-clientes' => ['auth' => true, 'papel' => ['automacao' => 'relatorio_avarias', 'minimo' => 'usuario'], 'controller' => RelatorioAvariasController::class, 'acao' => 'buscarClientes'],
+    'relatorio-avarias-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'relatorio_avarias', 'minimo' => 'usuario'], 'controller' => RelatorioAvariasController::class, 'acao' => 'enviar'],
 
     // --- Administração ---
     // Logs, Clientes e Cronograma liberam pra quem é admin de pelo
@@ -86,7 +93,12 @@ return [
 
     'admin-cronograma' => ['auth' => true, 'controller' => AdminCronogramaController::class, 'acao' => 'tela'],
     'admin-cronograma-criar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'criar'],
+    'admin-cronograma-editar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'editar'],
     'admin-cronograma-ativo' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'alternarAtivo'],
     'admin-cronograma-executar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'executarAgora'],
+
+    // --- Leo (chat com IA) ---
+    'chat-enviar' => ['auth' => true, 'metodo' => 'POST', 'controller' => ChatController::class, 'acao' => 'enviar'],
+    'chat-limpar' => ['auth' => true, 'metodo' => 'POST', 'controller' => ChatController::class, 'acao' => 'limparHistorico'],
 
 ];

@@ -59,6 +59,7 @@ class AdminClienteController
         $dados = [
             'unidade_id' => $_POST['unidade_id'] ?? null,
             'codigo_cliente' => trim($_POST['codigo_cliente'] ?? ''),
+            'codigo_talent' => trim($_POST['codigo_talent'] ?? ''),
             'razao_social' => trim($_POST['razao_social'] ?? ''),
             'nome_exibicao' => trim($_POST['nome_exibicao'] ?? ''),
             'cnpj' => trim($_POST['cnpj'] ?? ''),
