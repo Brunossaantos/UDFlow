@@ -85,6 +85,7 @@ return [
     'admin-automacoes-visibilidade' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminAutomacaoController::class, 'acao' => 'alternarVisibilidade'],
 
     'admin-cronograma' => ['auth' => true, 'controller' => AdminCronogramaController::class, 'acao' => 'tela'],
+    'admin-cronograma-criar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'criar'],
     'admin-cronograma-ativo' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'alternarAtivo'],
     'admin-cronograma-executar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'executarAgora'],
 

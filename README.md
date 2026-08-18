@@ -132,3 +132,15 @@ Guardando aqui porque são exatamente o tipo de coisa que só aparece rodando de
   a partir do Cronograma) responde com "webhook não configurado".
 - **Primeiro super_admin real**: seguir o passo 4 do Setup local
   abaixo pra cadastrar você mesmo direto no banco.
+
+
+testar 
+6. Configurar no cPanel (não é arquivo, é tela)
+
+cPanel → Cron Jobs → Adicionar novo:
+
+Minuto: * (todo minuto)
+Hora, Dia, Mês, Dia da semana: * em todos
+Comando: php /home/SEU_USUARIO_CPANEL/public_html/udflow/cron/executar_agendamentos.php
+
+Testei isso tudo de ponta a ponta contra um MariaDB de verdade — 8 conferências, 0 falhas: item diário rodando todo dia, item mensal só rodando no dia certo, item pausado não rodando mesmo no horário certo, e a execução automática ficando gravada com origem = 'automatico' e sem usuário atrelado (bem diferente de um clique manual).

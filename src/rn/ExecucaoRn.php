@@ -42,7 +42,28 @@ class ExecucaoRn
     /**
      * @return array{sucesso: bool, mensagem: ?string}
      */
+    /**
+     * @return array{sucesso: bool, mensagem: ?string}
+     */
     public function executarManual(string $automacaoChave, int $clienteId, string $emailDestino, int $usuarioId): array
+    {
+        return $this->executar($automacaoChave, $clienteId, $emailDestino, 'manual', $usuarioId);
+    }
+
+    /**
+     * Mesma coisa que executarManual, só que pro disparo automático
+     * vindo do cron job (cron/executar_agendamentos.php) - sem
+     * usuário logado por trás, então fica registrado como origem
+     * "automatico" em vez de "manual" na tb_execucoes.
+     *
+     * @return array{sucesso: bool, mensagem: ?string}
+     */
+    public function executarAutomatico(string $automacaoChave, int $clienteId, string $emailDestino): array
+    {
+        return $this->executar($automacaoChave, $clienteId, $emailDestino, 'automatico', null);
+    }
+
+    private function executar(string $automacaoChave, int $clienteId, string $emailDestino, string $origem, ?int $usuarioId): array
     {
         $erroEmail = $this->validarEmailDestino($emailDestino);
         if ($erroEmail !== null) {
@@ -54,9 +75,6 @@ class ExecucaoRn
             return ['sucesso' => false, 'mensagem' => 'Automação não encontrada.'];
         }
 
-        // sem webhook cadastrado não tem pra onde disparar - erro de
-        // configuração, não de execução, então nem chega a criar
-        // registro em tb_execucoes pra isso
         if (empty($automacao['webhook_url'])) {
             return ['sucesso' => false, 'mensagem' => 'Essa automação ainda não tem webhook configurado. Fala com o administrador.'];
         }
@@ -70,13 +88,9 @@ class ExecucaoRn
             (int) $automacao['id'],
             $clienteId,
             $usuarioId,
-            'manual',
+            $origem,
             $emailDestino
         );
-
-        $configKpi = $this->clienteDao->buscarKpiConfig($clienteId);
-
-        $logoUrl = trim((string) ($configKpi['logo_url'] ?? ''));
 
         $n8nRn = new N8nRn();
         $enviado = $n8nRn->dispararWebhook($automacao['webhook_url'], [
@@ -85,8 +99,7 @@ class ExecucaoRn
             'clienteNome' => $cliente->nomeExibicao,
             'unidadeCodigo' => $cliente->unidadeNome,
             'emailDestino' => $emailDestino,
-            'logoUrl' => $logoUrl,
-            'modo' => 'MANUAL',
+            'modo' => $origem === 'automatico' ? 'AUTOMATICO' : 'MANUAL',
         ]);
 
         if (!$enviado) {

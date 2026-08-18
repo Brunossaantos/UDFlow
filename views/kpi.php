@@ -1,4 +1,5 @@
 <?php
+
 /**
  * views/kpi.php
  * Renderizado por KpiController::tela() (via AutomacaoController::tela())
@@ -12,7 +13,7 @@ require __DIR__ . '/partials/cabecalho.php';
 $chaveRota = 'kpi';
 $rotuloBotao = 'Gerar e enviar';
 $avisoEmailUdlog = true;
-$avisoProximoDisparo = null; // KPI não tem mais agendamento automático
+$avisoProximoDisparo = 'Essa automação também roda sozinha, todo mês, no dia e horário configurados no Cronograma.';
 $mostrarColunaOrigem = false;
 
 require __DIR__ . '/partials/tela-execucao.php';
