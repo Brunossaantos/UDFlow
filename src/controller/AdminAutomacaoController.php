@@ -37,4 +37,100 @@ class AdminAutomacaoController
 
         Saida::json(['sucesso' => true]);
     }
+
+    public function criar(): void
+    {
+        ControleAcesso::exigirSuperAdmin();
+
+        if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
+        }
+
+        $nome = trim($_POST['nome'] ?? '');
+        $chave = trim($_POST['chave'] ?? '');
+        $rota = trim($_POST['rota'] ?? '');
+        $webhookUrl = trim($_POST['webhook_url'] ?? '');
+        $webhookMetodo = trim($_POST['webhook_metodo'] ?? 'POST');
+        $posicao = (int) ($_POST['posicao'] ?? 1);
+        $possuiAgendamento = ($_POST['possui_agendamento'] ?? '') === '1';
+        $visivelParaUsuarios = ($_POST['visivel_para_usuarios'] ?? '') === '1';
+
+        if (empty($nome) || empty($chave) || empty($rota)) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Preencha nome, chave e rota.'], 422);
+        }
+
+        if (!preg_match('/^[a-z_]+$/', $chave)) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Chave deve conter apenas letras minúsculas e underscore.'], 422);
+        }
+
+        if (!preg_match('/^[a-z-]+$/', $rota)) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Rota deve conter apenas letras minúsculas e hífen.'], 422);
+        }
+
+        if (!in_array($webhookMetodo, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Método HTTP inválido.'], 422);
+        }
+
+        $resultado = (new AutomacaoRn())->criar(
+            nome: $nome,
+            chave: $chave,
+            rota: $rota,
+            webhookUrl: $webhookUrl,
+            webhookMetodo: $webhookMetodo,
+            posicao: $posicao,
+            possuiAgendamento: $possuiAgendamento,
+            visivelParaUsuarios: $visivelParaUsuarios,
+            executorId: ControleAcesso::usuarioLogadoId()
+        );
+
+        if (!$resultado['sucesso']) {
+            Saida::json(['sucesso' => false, 'mensagem' => $resultado['mensagem']], 422);
+        }
+
+        Saida::json(['sucesso' => true, 'id' => $resultado['id']]);
+    }
+
+    public function atualizar(): void
+    {
+        ControleAcesso::exigirSuperAdmin();
+
+        if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
+        }
+
+        $id = (int) ($_POST['id'] ?? 0);
+        $nome = trim($_POST['nome'] ?? '');
+        $webhookUrl = trim($_POST['webhook_url'] ?? '');
+        $webhookMetodo = trim($_POST['webhook_metodo'] ?? 'POST');
+        $posicao = (int) ($_POST['posicao'] ?? 1);
+        $possuiAgendamento = ($_POST['possui_agendamento'] ?? '') === '1';
+        $visivelParaUsuarios = ($_POST['visivel_para_usuarios'] ?? '') === '1';
+        $ativo = ($_POST['ativo'] ?? '') === '1';
+
+        if ($id <= 0 || empty($nome)) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Dados inválidos.'], 422);
+        }
+
+        if (!in_array($webhookMetodo, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Método HTTP inválido.'], 422);
+        }
+
+        $resultado = (new AutomacaoRn())->atualizar(
+            id: $id,
+            nome: $nome,
+            webhookUrl: $webhookUrl,
+            webhookMetodo: $webhookMetodo,
+            posicao: $posicao,
+            possuiAgendamento: $possuiAgendamento,
+            visivelParaUsuarios: $visivelParaUsuarios,
+            ativo: $ativo,
+            executorId: ControleAcesso::usuarioLogadoId()
+        );
+
+        if (!$resultado['sucesso']) {
+            Saida::json(['sucesso' => false, 'mensagem' => $resultado['mensagem']], 422);
+        }
+
+        Saida::json(['sucesso' => true]);
+    }
 }

@@ -40,19 +40,11 @@ class CronogramaDao
                 JOIN tb_clientes c ON c.id = cr.cliente_id
                 JOIN tb_unidades u ON u.id = c.unidade_id
                 WHERE ' . implode(' AND ', $condicoes) . '
-                ORDER BY cr.dia_mes, cr.horario';
-
-        if (!empty($filtros['limit'])) {
-            $sql .= ' LIMIT :limit OFFSET :offset';
-        }
+                ORDER BY cr.cliente_id, cr.horario';
 
         $consulta = $this->pdo->prepare($sql);
         foreach ($parametros as $chave => $valor) {
             $consulta->bindValue($chave, $valor, PDO::PARAM_INT);
-        }
-        if (!empty($filtros['limit'])) {
-            $consulta->bindValue(':limit', $filtros['limit'], PDO::PARAM_INT);
-            $consulta->bindValue(':offset', $filtros['offset'] ?? 0, PDO::PARAM_INT);
         }
         $consulta->execute();
 
@@ -79,7 +71,7 @@ class CronogramaDao
 
     public function definirAtivo(int $id, bool $ativo): void
     {
-        $sql = 'UPDATE tb_cronograma SET ativo = :ativo WHERE id = :id';
+        $sql = 'UPDATE tb_cronograma SET ativo = :ativo, atualizado_em = NOW() WHERE id = :id';
 
         $comando = $this->pdo->prepare($sql);
         $comando->bindValue(':ativo', $ativo ? 1 : 0, PDO::PARAM_INT);
@@ -103,7 +95,6 @@ class CronogramaDao
 
         return (int) $this->pdo->lastInsertId();
     }
-
 
     public function existeHorario(int $automacaoId, int $clienteId, string $horario): bool
     {
@@ -147,15 +138,32 @@ class CronogramaDao
         return (int) ($resultado['total'] ?? 0);
     }
 
-    public function atualizar(int $id, string $frequencia, ?string $diasSemana, ?int $diaMes, string $horario): void
-    {
-        $sql = 'UPDATE tb_cronograma SET frequencia = :frequencia, dias_semana = :dias_semana, dia_mes = :dia_mes, horario = :horario WHERE id = :id';
+    public function atualizar(
+        int $id,
+        string $frequencia,
+        string $horario,
+        ?string $diasSemana = null,
+        ?int $diaMes = null
+    ): void {
+        $sql = 'UPDATE tb_cronograma SET frequencia = :frequencia, horario = :horario, 
+                dias_semana = :dias_semana, dia_mes = :dia_mes, atualizado_em = NOW()
+                WHERE id = :id';
 
         $comando = $this->pdo->prepare($sql);
+        $comando->bindValue(':id', $id, PDO::PARAM_INT);
         $comando->bindValue(':frequencia', $frequencia, PDO::PARAM_STR);
+        $comando->bindValue(':horario', $horario, PDO::PARAM_STR);
         $comando->bindValue(':dias_semana', $diasSemana, $diasSemana === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $comando->bindValue(':dia_mes', $diaMes, $diaMes === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
-        $comando->bindValue(':horario', $horario, PDO::PARAM_STR);
+
+        $comando->execute();
+    }
+
+    public function deletar(int $id): void
+    {
+        $sql = 'DELETE FROM tb_cronograma WHERE id = :id';
+
+        $comando = $this->pdo->prepare($sql);
         $comando->bindValue(':id', $id, PDO::PARAM_INT);
 
         $comando->execute();

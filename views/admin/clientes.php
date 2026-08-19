@@ -129,22 +129,22 @@ require __DIR__ . '/../partials/cabecalho.php';
           <input id="input-email-responsavel" type="email" name="email_responsavel" placeholder="usado no disparo automático (Cronograma)" class="w-full bg-surface border border-bord rounded-lg px-3 py-2.5 text-sm glow-focus">
         </div>
         <div>
-          <label class="block text-xs font-medium text-tsecondary mb-1.5">URL do logo <span class="text-tmuted font-normal">· só KPI</span></label>
+          <label class="block text-xs font-medium text-tsecondary mb-1.5">URL do logo</label>
           <input id="input-logo" type="text" name="logo_url" oninput="atualizarPreview()" class="w-full bg-surface border border-bord rounded-lg px-3 py-2.5 text-sm font-mono glow-focus">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-medium text-tsecondary mb-1.5">Cor primária <span class="text-tmuted font-normal">· só KPI</span></label>
+            <label class="block text-xs font-medium text-tsecondary mb-1.5">Cor primária</label>
             <div class="flex items-center gap-2 bg-surface border border-bord rounded-lg px-3 py-2">
-              <input id="input-cor1" type="color" name="cor_primaria" value="#0B6FA4" oninput="atualizarPreview()" class="w-7 h-7 rounded-md">
-              <span id="texto-cor1" class="text-xs font-mono text-tsecondary">#0B6FA4</span>
+              <input id="input-cor1" type="color" name="cor_primaria" oninput="atualizarPreview(); sincronizarHex('cor1')" class="w-7 h-7 rounded-md cursor-pointer">
+              <input id="texto-cor1" type="text" class="flex-1 bg-transparent text-xs font-mono text-tsecondary border-0 outline-none" maxlength="7" oninput="sincronizarCor('input-cor1', 'texto-cor1'); atualizarPreview()" placeholder="#000000">
             </div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-tsecondary mb-1.5">Cor secundária <span class="text-tmuted font-normal">· só KPI</span></label>
+            <label class="block text-xs font-medium text-tsecondary mb-1.5">Cor secundária</label>
             <div class="flex items-center gap-2 bg-surface border border-bord rounded-lg px-3 py-2">
-              <input id="input-cor2" type="color" name="cor_secundaria" value="#64748B" oninput="atualizarPreview()" class="w-7 h-7 rounded-md">
-              <span id="texto-cor2" class="text-xs font-mono text-tsecondary">#64748B</span>
+              <input id="input-cor2" type="color" name="cor_secundaria" oninput="atualizarPreview(); sincronizarHex('cor2')" class="w-7 h-7 rounded-md cursor-pointer">
+              <input id="texto-cor2" type="text" class="flex-1 bg-transparent text-xs font-mono text-tsecondary border-0 outline-none" maxlength="7" oninput="sincronizarCor('input-cor2', 'texto-cor2'); atualizarPreview()" placeholder="#000000">
             </div>
           </div>
         </div>
@@ -187,7 +187,7 @@ require __DIR__ . '/../partials/cabecalho.php';
       document.getElementById('input-nome-exibicao').value = dados.nomeExibicao;
       document.getElementById('input-razao-social').value = dados.razaoSocial;
       document.getElementById('input-codigo').value = dados.codigo;
-       document.getElementById('input-codigo-talent').value = dados.codigoTalent || '';
+      document.getElementById('input-codigo-talent').value = dados.codigoTalent || '';
       document.getElementById('input-cnpj').value = dados.cnpj;
       document.getElementById('input-unidade').value = dados.unidadeId;
       document.getElementById('input-email-responsavel').value = dados.emailResponsavel || '';
@@ -220,14 +220,31 @@ require __DIR__ . '/../partials/cabecalho.php';
     document.getElementById('drawer-cliente-overlay').classList.remove('flex');
   }
 
+  function sincronizarHex(tipo) {
+    const inputCor = document.getElementById('input-cor' + (tipo === 'cor1' ? '1' : '2'));
+    const textoCor = document.getElementById('texto-cor' + (tipo === 'cor1' ? '1' : '2'));
+    textoCor.value = inputCor.value.toUpperCase();
+  }
+
+  function sincronizarCor(inputId, textoId) {
+    const input = document.getElementById(inputId);
+    const texto = document.getElementById(textoId);
+    const valor = texto.value.trim();
+
+    // Valida formato hexadecimal
+    if (valor.match(/^#[0-9A-F]{6}$/i)) {
+      input.value = valor.toLowerCase();
+    }
+  }
+
   function atualizarPreview() {
     const nome = document.getElementById('input-nome-exibicao').value || 'Nome do cliente';
     const c1 = document.getElementById('input-cor1').value;
     const c2 = document.getElementById('input-cor2').value;
     document.getElementById('preview-nome').textContent = nome;
     document.getElementById('preview-capa').style.background = `linear-gradient(135deg, ${c1} 0%, ${c2} 100%)`;
-    document.getElementById('texto-cor1').textContent = c1;
-    document.getElementById('texto-cor2').textContent = c2;
+    document.getElementById('texto-cor1').value = c1.toUpperCase();
+    document.getElementById('texto-cor2').value = c2.toUpperCase();
   }
 </script>
 

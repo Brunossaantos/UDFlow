@@ -214,6 +214,16 @@ class ExecucaoRn
         ];
 
         /*
+         * Adiciona logo e cores da config de KPI (disponível para todas as automações)
+         */
+        $kpiConfig = $this->clienteDao->buscarKpiConfig($clienteId);
+        if ($kpiConfig) {
+            $payload['logoUrl'] = $kpiConfig['logo_url'] ?? null;
+            $payload['corPrimaria'] = $kpiConfig['cor_primaria'] ?? null;
+            $payload['corSecundaria'] = $kpiConfig['cor_secundaria'] ?? null;
+        }
+
+        /*
          * A razão social será enviada somente para a Estadia.
          */
         if ($automacaoChave === 'estadia') {

@@ -58,29 +58,84 @@ class AutomacaoDao
     }
 
     public function criar(
-        string $chave,
         string $nome,
-        string $icone,
+        string $chave,
         string $rota,
-        bool $permiteExecucaoManual,
-        bool $possuiAgendamento,
-        bool $visivelParaUsuarios,
-        int $ordemMenu
+        string $webhookUrl = '',
+        string $webhookMetodo = 'POST',
+        int $posicao = 1,
+        bool $possuiAgendamento = false,
+        bool $visivelParaUsuarios = true
     ): int {
-        $sql = 'INSERT INTO tb_automacoes (chave, nome, icone, rota, permite_execucao_manual, possui_agendamento, visivel_para_usuarios, ordem_menu)
-                VALUES (:chave, :nome, :icone, :rota, :permite_manual, :possui_agendamento, :visivel, :ordem)';
+        $sql = 'INSERT INTO tb_automacoes (
+            nome,
+            chave,
+            rota,
+            webhook_url,
+            webhook_metodo,
+            ordem_menu,
+            possui_agendamento,
+            visivel_para_usuarios,
+            ativo,
+            criado_em
+        )
+        VALUES (
+            :nome,
+            :chave,
+            :rota,
+            :webhook_url,
+            :webhook_metodo,
+            :posicao,
+            :possui_agendamento,
+            :visivel,
+            1,
+            NOW()
+        )';
 
         $comando = $this->pdo->prepare($sql);
-        $comando->bindValue(':chave', $chave, PDO::PARAM_STR);
         $comando->bindValue(':nome', $nome, PDO::PARAM_STR);
-        $comando->bindValue(':icone', $icone, PDO::PARAM_STR);
+        $comando->bindValue(':chave', $chave, PDO::PARAM_STR);
         $comando->bindValue(':rota', $rota, PDO::PARAM_STR);
-        $comando->bindValue(':permite_manual', $permiteExecucaoManual ? 1 : 0, PDO::PARAM_INT);
+        $comando->bindValue(':webhook_url', $webhookUrl, PDO::PARAM_STR);
+        $comando->bindValue(':webhook_metodo', $webhookMetodo, PDO::PARAM_STR);
+        $comando->bindValue(':posicao', $posicao, PDO::PARAM_INT);
         $comando->bindValue(':possui_agendamento', $possuiAgendamento ? 1 : 0, PDO::PARAM_INT);
         $comando->bindValue(':visivel', $visivelParaUsuarios ? 1 : 0, PDO::PARAM_INT);
-        $comando->bindValue(':ordem', $ordemMenu, PDO::PARAM_INT);
         $comando->execute();
 
         return (int) $this->pdo->lastInsertId();
+    }
+
+    public function atualizar(
+        int $id,
+        string $nome,
+        string $webhookUrl = '',
+        string $webhookMetodo = 'POST',
+        int $posicao = 1,
+        bool $possuiAgendamento = false,
+        bool $visivelParaUsuarios = true,
+        bool $ativo = true
+    ): void {
+        $sql = 'UPDATE tb_automacoes
+        SET nome = :nome,
+            webhook_url = :webhook_url,
+            webhook_metodo = :webhook_metodo,
+            ordem_menu = :posicao,
+            possui_agendamento = :possui_agendamento,
+            visivel_para_usuarios = :visivel,
+            ativo = :ativo,
+            atualizado_em = NOW()
+        WHERE id = :id';
+
+        $comando = $this->pdo->prepare($sql);
+        $comando->bindValue(':nome', $nome, PDO::PARAM_STR);
+        $comando->bindValue(':webhook_url', $webhookUrl, PDO::PARAM_STR);
+        $comando->bindValue(':webhook_metodo', $webhookMetodo, PDO::PARAM_STR);
+        $comando->bindValue(':posicao', $posicao, PDO::PARAM_INT);
+        $comando->bindValue(':possui_agendamento', $possuiAgendamento ? 1 : 0, PDO::PARAM_INT);
+        $comando->bindValue(':visivel', $visivelParaUsuarios ? 1 : 0, PDO::PARAM_INT);
+        $comando->bindValue(':ativo', $ativo ? 1 : 0, PDO::PARAM_INT);
+        $comando->bindValue(':id', $id, PDO::PARAM_INT);
+        $comando->execute();
     }
 }

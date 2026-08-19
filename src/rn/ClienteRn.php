@@ -95,10 +95,6 @@ class ClienteRn
             return ['sucesso' => false, 'mensagem' => 'CNPJ precisa ter 14 dígitos.'];
         }
 
-        if ($this->clienteDao->existeCodigoOuCnpj($dados['codigo_cliente'], $cnpj, $id)) {
-            return ['sucesso' => false, 'mensagem' => 'Já existe outro cliente com esse código ou CNPJ.'];
-        }
-
         $codigoTalent = trim($dados['codigo_talent'] ?? '') ?: null;
         if ($codigoTalent !== null && $this->clienteDao->existeCodigoTalent((int) $dados['unidade_id'], $codigoTalent, $id)) {
             return ['sucesso' => false, 'mensagem' => 'Já existe outro cliente com esse código do Talent nessa unidade.'];

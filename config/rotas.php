@@ -28,6 +28,7 @@ use Udflow\controller\AdminClienteController;
 use Udflow\controller\AdminAutomacaoController;
 use Udflow\controller\AdminLogController;
 use Udflow\controller\AdminCronogramaController;
+use Udflow\controller\AutomacaoConfigController;
 use Udflow\controller\ChatController;
 
 return [
@@ -89,13 +90,41 @@ return [
     'admin-usuarios-permissoes' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminUsuarioController::class, 'acao' => 'atualizarPermissoes'],
 
     'admin-automacoes' => ['auth' => true, 'controller' => AdminAutomacaoController::class, 'acao' => 'tela'],
+    'admin-automacoes-criar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminAutomacaoController::class, 'acao' => 'criar'],
+    'admin-automacoes-atualizar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminAutomacaoController::class, 'acao' => 'atualizar'],
     'admin-automacoes-visibilidade' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminAutomacaoController::class, 'acao' => 'alternarVisibilidade'],
 
     'admin-cronograma' => ['auth' => true, 'controller' => AdminCronogramaController::class, 'acao' => 'tela'],
     'admin-cronograma-criar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'criar'],
     'admin-cronograma-editar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'editar'],
     'admin-cronograma-ativo' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'alternarAtivo'],
+    'admin-cronograma-horario-ativo' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'alternarHorarioIndividual'],
+    'admin-cronograma-horario-atualizar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'atualizarHorario'],
+    'admin-cronograma-horario-deletar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'deletarHorario'],
     'admin-cronograma-executar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AdminCronogramaController::class, 'acao' => 'executarAgora'],
+
+    // --- Configuração de Automações (Webhooks e Payloads) ---
+    'admin-automacao-config' => ['auth' => true, 'controller' => AutomacaoConfigController::class, 'acao' => 'tela'],
+    'admin-automacao-config-editar' => ['auth' => true, 'controller' => AutomacaoConfigController::class, 'acao' => 'editar'],
+    
+    // Campos do Payload
+    'admin-automacao-config-campo-criar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'criarCampo'],
+    'admin-automacao-config-campo-atualizar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'atualizarCampo'],
+    'admin-automacao-config-campo-deletar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'deletarCampo'],
+    
+    // Regras de Transformação
+    'admin-automacao-config-regra-criar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'criarRegra'],
+    'admin-automacao-config-regra-atualizar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'atualizarRegra'],
+    'admin-automacao-config-regra-deletar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'deletarRegra'],
+    
+    // Headers Customizáveis
+    'admin-automacao-config-header-criar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'criarHeader'],
+    'admin-automacao-config-header-atualizar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'atualizarHeader'],
+    'admin-automacao-config-header-deletar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'deletarHeader'],
+    
+    // Logs e Estatísticas
+    'admin-automacao-config-logs' => ['auth' => true, 'controller' => AutomacaoConfigController::class, 'acao' => 'verLogs'],
+    'admin-automacao-config-logs-erros' => ['auth' => true, 'controller' => AutomacaoConfigController::class, 'acao' => 'verLogsComErro'],
 
     // --- Leo (chat com IA) ---
     'chat-enviar' => ['auth' => true, 'metodo' => 'POST', 'controller' => ChatController::class, 'acao' => 'enviar'],

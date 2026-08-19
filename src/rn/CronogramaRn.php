@@ -125,41 +125,83 @@ class CronogramaRn
         );
     }
 
+    public function buscarPorId(int $id): array|null
+    {
+        return $this->cronogramaDao->buscarPorId($id);
+    }
+
     /**
+     * Atualizar horário do cronograma
+     * 
      * @return array{sucesso: bool, mensagem: ?string}
      */
-    public function atualizar(int $id, string $frequencia, ?string $diasSemana, ?int $diaMes, string $horario, int $executorId): array
+    public function atualizar(
+        int $id,
+        string $frequencia,
+        string $horario,
+        ?string $diasSemana = null,
+        ?int $diaMes = null,
+        int $executorId = 0
+    ): array
     {
-        if (!in_array($frequencia, ['diaria', 'mensal'], true)) {
-            return ['sucesso' => false, 'mensagem' => 'Escolhe a frequência: diária ou mensal.'];
+        $item = $this->cronogramaDao->buscarPorId($id);
+        if ($item === null) {
+            return ['sucesso' => false, 'mensagem' => 'Item de cronograma não encontrado.'];
         }
 
-        if ($frequencia === 'mensal') {
-            if ($diaMes === null || $diaMes < 1 || $diaMes > 31) {
-                return ['sucesso' => false, 'mensagem' => 'Informa um dia do mês válido (1 a 31).'];
-            }
-        } else {
-            $diaMes = null;
+        // Validar frequência
+        if (!in_array($frequencia, ['diaria', 'mensal'])) {
+            return ['sucesso' => false, 'mensagem' => 'Frequência inválida.'];
         }
 
+        // Validar horário (formato HH:MM:SS ou HH:MM)
+        if (!preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $horario)) {
+            return ['sucesso' => false, 'mensagem' => 'Horário em formato inválido.'];
+        }
+
+        // Se mensal, validar dia do mês
+        if ($frequencia === 'mensal' && ($diaMes === null || $diaMes <= 0 || $diaMes > 31)) {
+            return ['sucesso' => false, 'mensagem' => 'Dia do mês deve estar entre 1 e 31.'];
+        }
+
+        // Se diária, dias_semana é obrigatório
+        if ($frequencia === 'diaria' && empty($diasSemana)) {
+            return ['sucesso' => false, 'mensagem' => 'Selecione pelo menos um dia da semana.'];
+        }
+
+        // Normalizar dias da semana
         $diasSemana = $this->normalizarDiasSemana($diasSemana);
         if ($diasSemana === false) {
             return ['sucesso' => false, 'mensagem' => 'Dias da semana inválidos.'];
         }
 
-        if (!preg_match('/^([01]\d|2[0-3]):([0-5]\d)/', $horario)) {
-            return ['sucesso' => false, 'mensagem' => 'Informa um horário válido (HH:MM).'];
-        }
-        $horario = substr($horario, 0, 5) . ':00';
+        // Atualizar no banco
+        $this->cronogramaDao->atualizar(
+            id: $id,
+            frequencia: $frequencia,
+            horario: $horario,
+            diasSemana: $diasSemana,
+            diaMes: $diaMes
+        );
 
-        $this->cronogramaDao->atualizar($id, $frequencia, $diasSemana, $diaMes, $horario);
         $this->logAdminDao->registrar($executorId, 'cronograma.atualizado', 'tb_cronograma', $id, null);
 
         return ['sucesso' => true, 'mensagem' => null];
     }
 
-    public function buscarPorId(int $id): array|null
+    /**
+     * @return array{sucesso: bool, mensagem: ?string}
+     */
+    public function deletar(int $id, int $executorId): array
     {
-        return $this->cronogramaDao->buscarPorId($id);
+        $item = $this->cronogramaDao->buscarPorId($id);
+        if ($item === null) {
+            return ['sucesso' => false, 'mensagem' => 'Item de cronograma não encontrado.'];
+        }
+
+        $this->cronogramaDao->deletar($id);
+        $this->logAdminDao->registrar($executorId, 'cronograma.deletado', 'tb_cronograma', $id, null);
+
+        return ['sucesso' => true, 'mensagem' => null];
     }
 }
