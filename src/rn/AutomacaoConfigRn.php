@@ -470,9 +470,46 @@ class AutomacaoConfigRn
         }
     }
 
-    // ========================================================================
-    // VALIDAÇÕES INTERNAS
-    // ========================================================================
+    /**
+     * Salvar campos selecionados dinamicamente
+     */
+    public function salvarCamposSelecionados(int $automacaoId, array $camposSelecionados): void
+    {
+        // Limpar campos antigos
+        $this->dao->deletarCampos($automacaoId);
+
+        // Inserir novos campos selecionados
+        $posicao = 1;
+        foreach ($camposSelecionados as $nomeCampo) {
+            $this->dao->criarCampo(
+                automacaoId: $automacaoId,
+                nomeCampo: $nomeCampo,
+                tipoDado: $this->obterTipoDado($nomeCampo),
+                obrigatorio: $this->ehObrigatorio($nomeCampo),
+                posicao: $posicao++
+            );
+        }
+    }
+
+    /**
+     * Obter tipo de dado baseado no nome do campo
+     */
+    private function obterTipoDado(string $nomeCampo): string
+    {
+        return match($nomeCampo) {
+            'execucaoId', 'codigo_talent' => 'integer',
+            'emailDestino' => 'email',
+            default => 'string',
+        };
+    }
+
+    /**
+     * Verificar se campo é obrigatório
+     */
+    private function ehObrigatorio(string $nomeCampo): bool
+    {
+        return in_array($nomeCampo, ['execucaoId', 'emailDestino', 'modo']);
+    }
 
     /**
      * Validar valor baseado no tipo de dado

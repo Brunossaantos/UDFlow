@@ -155,9 +155,13 @@ class AutomacaoConfigDao
         return $stmt->execute();
     }
 
-    // ========================================================================
-    // REGRAS DE TRANSFORMAÇÃO
-    // ========================================================================
+    /**
+     * Alias para deletarCamposPorAutomacao
+     */
+    public function deletarCampos(int $automacaoId): bool
+    {
+        return $this->deletarCamposPorAutomacao($automacaoId);
+    }
 
     /**
      * Buscar todas as regras de uma automação (ordenado por execução)

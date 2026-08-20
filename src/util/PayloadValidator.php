@@ -2,6 +2,11 @@
 
 namespace Udflow\util;
 
+// Proteção contra redeclaração
+if (class_exists('Udflow\util\PayloadValidator', false)) {
+    return;
+}
+
 /**
  * PayloadValidator
  * 
@@ -395,5 +400,37 @@ class PayloadValidator
         }
 
         return $filtrado;
+    }
+
+    /**
+     * Validar payload inteiro contra as regras de uma automação
+     * 
+     * @param array $payload Payload a validar
+     * @param int $automacaoId ID da automação (para buscar regras)
+     * 
+     * @return array Lista de erros (vazio = válido)
+     */
+    public static function validar(array $payload, int $automacaoId): array
+    {
+        $erros = [];
+
+        // Para cada campo no payload, validar contra regras
+        foreach ($payload as $chave => $valor) {
+            // Tipos básicos de validação
+            if ($chave === 'execucaoId' && !is_int($valor)) {
+                $erros[] = "execucaoId deve ser um inteiro";
+            }
+            if ($chave === 'clienteId' && !is_int($valor)) {
+                $erros[] = "clienteId deve ser um inteiro";
+            }
+            if ($chave === 'emailDestino' && !filter_var($valor, FILTER_VALIDATE_EMAIL)) {
+                $erros[] = "emailDestino deve ser um email válido";
+            }
+            if ($chave === 'modo' && !in_array($valor, ['AUTOMATICO', 'MANUAL'])) {
+                $erros[] = "modo deve ser AUTOMATICO ou MANUAL";
+            }
+        }
+
+        return $erros;
     }
 }

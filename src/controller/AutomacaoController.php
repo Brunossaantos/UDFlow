@@ -3,6 +3,7 @@
 namespace Udflow\controller;
 
 use Udflow\dao\ExecucaoDao;
+use Udflow\dao\AutomacaoDao;
 use Udflow\rn\ExecucaoRn;
 use Udflow\util\Csrf;
 use Udflow\util\Saida;
@@ -11,47 +12,88 @@ use Udflow\util\ControleAcesso;
 /**
  * AutomacaoController
  *
- * Base comum das telas de execução (KPI, Programação semanal,
- * Estadia). Cada uma só precisa dizer qual é a sua "chave" (o nome
- * dela em tb_automacoes) e qual Rn usar - o resto do fluxo
- * (autocomplete, disparo manual, listagem de "minhas solicitações")
- * é sempre o mesmo, então fica escrito uma vez só aqui.
+ * Controller genérico para TODAS as automações (KPI, Programação semanal,
+ * Estadia, Relatório de Avarias, etc). A automação é identificada pela
+ * rota (?pagina=kpi, ?pagina=estadia, etc) e carregada dinamicamente do banco.
+ * 
+ * Nenhuma controller específica é mais necessária - tudo é dinâmico!
  */
-abstract class AutomacaoController
+class AutomacaoController
 {
-    abstract protected function chave(): string;
-    abstract protected function rn(): ExecucaoRn;
-    abstract protected function view(): string;
+    private string $chave;
+    private array $automacao;
+
+    public function __construct()
+    {
+        $this->chave = $this->obterChaveViaRota();
+        error_log('DEBUG AutomacaoController constructor: chave=' . $this->chave);
+        
+        $automacao = (new AutomacaoDao())->buscarPorChave($this->chave);
+        error_log('DEBUG AutomacaoController constructor: automacao=' . json_encode($automacao));
+        
+        $this->automacao = $automacao ?? throw new \Exception("Automação '{$this->chave}' não encontrada");
+    }
+
+    /**
+     * Obtém a chave da automação pela rota atual (?pagina=kpi, etc)
+     */
+    private function obterChaveViaRota(): string
+    {
+        $pagina = $_GET['pagina'] ?? '';
+        
+        // Remover sufixos de ação (-clientes, -enviar)
+        $chaveBase = preg_replace('/-clientes|-enviar$/', '', $pagina);
+        
+        // Mapear rotas alternativas
+        $mapeamento = [
+            'kpi' => 'kpi',
+            'estadia' => 'estadia',
+            'programacao-semanal' => 'programacao_semanal',
+            'relatorio-avarias' => 'relatorio_avarias',
+        ];
+        
+        return $mapeamento[$chaveBase] ?? throw new \Exception("Rota '{$pagina}' não mapeada para automação");
+    }
 
     public function tela(): void
     {
-        ControleAcesso::exigirPapel($this->chave(), 'usuario');
+        ControleAcesso::exigirPapel($this->chave, 'usuario');
 
         $execucaoDao = new ExecucaoDao();
-        $minhasExecucoes = $execucaoDao->listarDoUsuario(ControleAcesso::usuarioLogadoId(), $this->chave());
+        $minhasExecucoes = $execucaoDao->listarDoUsuario(ControleAcesso::usuarioLogadoId(), $this->chave);
 
-        require __DIR__ . '/../../views/' . $this->view();
+        // Usa view genérica (automacao.php) para TODAS as automações!
+        require __DIR__ . '/../../views/automacao.php';
     }
 
     /** Endpoint chamado via fetch() enquanto a pessoa digita o nome do cliente */
     public function buscarClientes(): void
     {
-        ControleAcesso::exigirPapel($this->chave(), 'usuario');
+        try {
+            ControleAcesso::exigirPapel($this->chave, 'usuario');
 
-        $termo = trim($_GET['termo'] ?? '');
-        $clientes = $this->rn()->buscarClientesParaAutocomplete($termo, $this->chave());
+            $termo = trim($_GET['termo'] ?? '');
+            error_log('DEBUG buscarClientes: termo=' . $termo . ', chave=' . $this->chave);
+            
+            $execucaoRn = new \Udflow\rn\ExecucaoRn();
+            $clientes = $execucaoRn->buscarClientesParaAutocomplete($termo, $this->chave);
+            error_log('DEBUG buscarClientes: clientes=' . json_encode($clientes));
 
-        Saida::json(['clientes' => array_map(fn ($c) => [
-            'id' => $c->id,
-            'nome' => $c->nomeExibicao,
-            'codigo' => $c->codigoCliente,
-            'unidade' => $c->unidadeNome,
-        ], $clientes)]);
+            Saida::json(['clientes' => array_map(fn ($c) => [
+                'id' => $c['id'] ?? $c->id ?? null,
+                'nome' => $c['nome_exibicao'] ?? $c->nomeExibicao ?? null,
+                'codigo' => $c['codigo_cliente'] ?? $c->codigoCliente ?? null,
+                'unidade' => $c['unidade_nome'] ?? $c->unidadeNome ?? null,
+            ], $clientes)]);
+        } catch (\Exception $e) {
+            error_log('DEBUG buscarClientes ERROR: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
+            Saida::json(['erro' => $e->getMessage()], 500);
+        }
     }
 
     public function enviar(): void
     {
-        ControleAcesso::exigirPapel($this->chave(), 'usuario');
+        ControleAcesso::exigirPapel($this->chave, 'usuario');
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada, atualiza a página.'], 419);
@@ -64,7 +106,7 @@ abstract class AutomacaoController
             Saida::json(['sucesso' => false, 'mensagem' => 'Selecione um cliente e informe o e-mail.'], 422);
         }
 
-        $resultado = $this->rn()->executarManual($this->chave(), $clienteId, $email, ControleAcesso::usuarioLogadoId());
+        $resultado = (new ExecucaoRn())->executarManual($this->chave, $clienteId, $email, ControleAcesso::usuarioLogadoId());
 
         Saida::json($resultado, $resultado['sucesso'] ? 200 : 422);
     }

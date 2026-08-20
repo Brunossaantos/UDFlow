@@ -5,6 +5,8 @@ namespace Udflow\rn;
 use Udflow\dao\ClienteDao;
 use Udflow\dao\ExecucaoDao;
 use Udflow\dao\AutomacaoDao;
+use Udflow\util\PayloadBuilder;
+use Udflow\util\PayloadValidator;
 
 /**
  * Regra comum para execução das automações.
@@ -95,7 +97,7 @@ class ExecucaoRn
         /*
          * Valida o e-mail informado.
          */
-        $erroEmail = $this->validarEmailDestino($emailDestino);
+        $erroEmail = $this->validarEmailDestino($emailDestino, $automacaoChave);
 
         if ($erroEmail !== null) {
             return [
@@ -200,44 +202,39 @@ class ExecucaoRn
         );
 
         /*
-         * Payload comum para todas as automações.
+         * Construir payload dinamicamente usando PayloadBuilder
+         * Os campos são configurados no admin por automação
          */
-        $payload = [
-            'execucaoId' => $execucaoId,
-            'clienteCodigo' => $cliente->codigoCliente,
-            'clienteNome' => $cliente->nomeExibicao,
-            'unidadeCodigo' => $cliente->unidadeNome,
-            'emailDestino' => $emailDestino,
-            'modo' => $origem === 'automatico'
-                ? 'AUTOMATICO'
-                : 'MANUAL',
-        ];
+        $payloadBuilder = new PayloadBuilder();
+        $payloadResult = $payloadBuilder->construir(
+            automacaoId: (int) $automacao['id'],
+            clienteId: $clienteId,
+            emailDestino: $emailDestino,
+            modo: $origem === 'automatico' ? 'AUTOMATICO' : 'MANUAL',
+            execucaoId: $execucaoId
+        );
 
-        /*
-         * Adiciona logo e cores da config de KPI (disponível para todas as automações)
-         */
-        $kpiConfig = $this->clienteDao->buscarKpiConfig($clienteId);
-        if ($kpiConfig) {
-            $payload['logoUrl'] = $kpiConfig['logo_url'] ?? null;
-            $payload['corPrimaria'] = $kpiConfig['cor_primaria'] ?? null;
-            $payload['corSecundaria'] = $kpiConfig['cor_secundaria'] ?? null;
+        if (!$payloadResult['sucesso']) {
+            $this->execucaoDao->atualizarStatus($execucaoId, 'erro', 'Erro ao construir payload: ' . $payloadResult['mensagem']);
+            return [
+                'sucesso' => false,
+                'mensagem' => $payloadResult['mensagem'] ?? 'Erro ao construir payload',
+            ];
         }
 
-        /*
-         * A razão social será enviada somente para a Estadia.
-         */
-        if ($automacaoChave === 'estadia') {
-            $payload['clienteRazaoSocial'] =
-                $cliente->razaoSocial;
-        }
+        $payload = $payloadResult['payload'] ?? [];
 
         /*
-         * O código Talent será enviado somente para
-         * as automações configuradas anteriormente.
+         * Validar payload antes de enviar
          */
-        if ($precisaCodigoTalent) {
-            $payload['codigoTalent'] =
-                $cliente->codigoTalent;
+        $validator = new PayloadValidator();
+        $errosValidacao = $validator->validar($payload, (int) $automacao['id']);
+        if (!empty($errosValidacao)) {
+            $this->execucaoDao->atualizarStatus($execucaoId, 'erro', 'Validação de payload falhou: ' . json_encode($errosValidacao));
+            return [
+                'sucesso' => false,
+                'mensagem' => 'Payload inválido: ' . implode(', ', $errosValidacao),
+            ];
         }
 
         /*
@@ -277,10 +274,16 @@ class ExecucaoRn
      * Caso contrário, retorna a mensagem de erro.
      */
     protected function validarEmailDestino(
-        string $email
+        string $email,
+        string $automacaoChave
     ): ?string {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return 'Informe um e-mail válido.';
+        }
+
+        // KPI: apenas @udlog
+        if ($automacaoChave === 'kpi' && !preg_match('/@udlog\.[a-z.]+$/i', $email)) {
+            return 'O e-mail de destino precisa ser @udlog.';
         }
 
         return null;

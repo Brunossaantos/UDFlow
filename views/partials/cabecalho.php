@@ -166,11 +166,11 @@ $iconesPorAutomacao = [
 
         <?php if (!empty($automacoesDoMenu)): ?>
           <p class="px-3 pt-4 pb-1.5 text-[10px] font-semibold tracking-widest text-tmuted">AUTOMAÇÕES</p>
-          <?php foreach ($automacoesDoMenu as $automacaoMenu): ?>
-            <a href="index.php?pagina=<?= Saida::e(str_replace('_', '-', $automacaoMenu['chave'])) ?>"
-              class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === $automacaoMenu['chave'] ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><?= $iconesPorAutomacao[$automacaoMenu['chave']] ?? '<circle cx="12" cy="12" r="9"/>' ?></svg>
-              <?= Saida::e($automacaoMenu['nome']) ?>
+          <?php foreach ($automacoesDoMenu as $menuAutomacao): ?>
+            <a href="index.php?pagina=<?= Saida::e(str_replace('_', '-', $menuAutomacao['chave'])) ?>"
+              class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === $menuAutomacao['chave'] ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><?= $iconesPorAutomacao[$menuAutomacao['chave']] ?? '<circle cx="12" cy="12" r="9"/>' ?></svg>
+              <?= Saida::e($menuAutomacao['nome']) ?>
             </a>
           <?php endforeach; ?>
         <?php endif; ?>
@@ -217,6 +217,12 @@ $iconesPorAutomacao = [
               <path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.98 2.98l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m2.98-2.98l4.24-4.24M19.78 19.78l-4.24-4.24m-2.98-2.98l-4.24-4.24" />
             </svg>
             Configurar Automações
+          </a>
+          <a href="index.php?pagina=admin-logs" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-logs' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M9 2H4v5M9 22H4v-5M15 2h5v5M15 22h5v-5M3 12h18M3 8h18M3 16h18" />
+            </svg>
+            Logs e status
           </a>
         <?php endif; ?>
       </nav>

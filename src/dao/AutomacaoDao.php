@@ -67,30 +67,8 @@ class AutomacaoDao
         bool $possuiAgendamento = false,
         bool $visivelParaUsuarios = true
     ): int {
-        $sql = 'INSERT INTO tb_automacoes (
-            nome,
-            chave,
-            rota,
-            webhook_url,
-            webhook_metodo,
-            ordem_menu,
-            possui_agendamento,
-            visivel_para_usuarios,
-            ativo,
-            criado_em
-        )
-        VALUES (
-            :nome,
-            :chave,
-            :rota,
-            :webhook_url,
-            :webhook_metodo,
-            :posicao,
-            :possui_agendamento,
-            :visivel,
-            1,
-            NOW()
-        )';
+        $sql = 'INSERT INTO tb_automacoes (nome, chave, rota, webhook_url, webhook_metodo, posicao, possui_agendamento, visivel_para_usuarios, ativo, criado_em)
+                VALUES (:nome, :chave, :rota, :webhook_url, :webhook_metodo, :posicao, :possui_agendamento, :visivel, 1, NOW())';
 
         $comando = $this->pdo->prepare($sql);
         $comando->bindValue(':nome', $nome, PDO::PARAM_STR);
@@ -116,16 +94,9 @@ class AutomacaoDao
         bool $visivelParaUsuarios = true,
         bool $ativo = true
     ): void {
-        $sql = 'UPDATE tb_automacoes
-        SET nome = :nome,
-            webhook_url = :webhook_url,
-            webhook_metodo = :webhook_metodo,
-            ordem_menu = :posicao,
-            possui_agendamento = :possui_agendamento,
-            visivel_para_usuarios = :visivel,
-            ativo = :ativo,
-            atualizado_em = NOW()
-        WHERE id = :id';
+        $sql = 'UPDATE tb_automacoes SET nome = :nome, webhook_url = :webhook_url, webhook_metodo = :webhook_metodo, 
+                posicao = :posicao, possui_agendamento = :possui_agendamento, visivel_para_usuarios = :visivel, 
+                ativo = :ativo, atualizado_em = NOW() WHERE id = :id';
 
         $comando = $this->pdo->prepare($sql);
         $comando->bindValue(':nome', $nome, PDO::PARAM_STR);
@@ -135,6 +106,18 @@ class AutomacaoDao
         $comando->bindValue(':possui_agendamento', $possuiAgendamento ? 1 : 0, PDO::PARAM_INT);
         $comando->bindValue(':visivel', $visivelParaUsuarios ? 1 : 0, PDO::PARAM_INT);
         $comando->bindValue(':ativo', $ativo ? 1 : 0, PDO::PARAM_INT);
+        $comando->bindValue(':id', $id, PDO::PARAM_INT);
+        $comando->execute();
+    }
+
+    public function atualizarWebhook(int $id, string $webhookUrl, string $webhookMetodo): void
+    {
+        $sql = 'UPDATE tb_automacoes SET webhook_url = :webhook_url, webhook_metodo = :webhook_metodo, 
+                atualizado_em = NOW() WHERE id = :id';
+
+        $comando = $this->pdo->prepare($sql);
+        $comando->bindValue(':webhook_url', $webhookUrl, PDO::PARAM_STR);
+        $comando->bindValue(':webhook_metodo', $webhookMetodo, PDO::PARAM_STR);
         $comando->bindValue(':id', $id, PDO::PARAM_INT);
         $comando->execute();
     }

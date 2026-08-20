@@ -18,10 +18,7 @@
 
 use Udflow\controller\LoginController;
 use Udflow\controller\HomeController;
-use Udflow\controller\KpiController;
-use Udflow\controller\ProgramacaoSemanalController;
-use Udflow\controller\EstadiaController;
-use Udflow\controller\RelatorioAvariasController;
+use Udflow\controller\AutomacaoController;
 use Udflow\controller\CallbackController;
 use Udflow\controller\AdminUsuarioController;
 use Udflow\controller\AdminClienteController;
@@ -53,24 +50,24 @@ return [
     'home' => ['auth' => true, 'controller' => HomeController::class, 'acao' => 'tela'],
 
     // --- KPI ---
-    'kpi' => ['auth' => true, 'papel' => ['automacao' => 'kpi', 'minimo' => 'usuario'], 'controller' => KpiController::class, 'acao' => 'tela'],
-    'kpi-clientes' => ['auth' => true, 'papel' => ['automacao' => 'kpi', 'minimo' => 'usuario'], 'controller' => KpiController::class, 'acao' => 'buscarClientes'],
-    'kpi-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'kpi', 'minimo' => 'usuario'], 'controller' => KpiController::class, 'acao' => 'enviar'],
+    'kpi' => ['auth' => true, 'papel' => ['automacao' => 'kpi', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'tela'],
+    'kpi-clientes' => ['auth' => true, 'papel' => ['automacao' => 'kpi', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'buscarClientes'],
+    'kpi-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'kpi', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'enviar'],
 
     // --- Programação semanal ---
-    'programacao-semanal' => ['auth' => true, 'papel' => ['automacao' => 'programacao_semanal', 'minimo' => 'usuario'], 'controller' => ProgramacaoSemanalController::class, 'acao' => 'tela'],
-    'programacao-semanal-clientes' => ['auth' => true, 'papel' => ['automacao' => 'programacao_semanal', 'minimo' => 'usuario'], 'controller' => ProgramacaoSemanalController::class, 'acao' => 'buscarClientes'],
-    'programacao-semanal-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'programacao_semanal', 'minimo' => 'usuario'], 'controller' => ProgramacaoSemanalController::class, 'acao' => 'enviar'],
+    'programacao-semanal' => ['auth' => true, 'papel' => ['automacao' => 'programacao_semanal', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'tela'],
+    'programacao-semanal-clientes' => ['auth' => true, 'papel' => ['automacao' => 'programacao_semanal', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'buscarClientes'],
+    'programacao-semanal-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'programacao_semanal', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'enviar'],
 
     // --- Estadia ---
-    'estadia' => ['auth' => true, 'papel' => ['automacao' => 'estadia', 'minimo' => 'usuario'], 'controller' => EstadiaController::class, 'acao' => 'tela'],
-    'estadia-clientes' => ['auth' => true, 'papel' => ['automacao' => 'estadia', 'minimo' => 'usuario'], 'controller' => EstadiaController::class, 'acao' => 'buscarClientes'],
-    'estadia-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'estadia', 'minimo' => 'usuario'], 'controller' => EstadiaController::class, 'acao' => 'enviar'],
+    'estadia' => ['auth' => true, 'papel' => ['automacao' => 'estadia', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'tela'],
+    'estadia-clientes' => ['auth' => true, 'papel' => ['automacao' => 'estadia', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'buscarClientes'],
+    'estadia-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'estadia', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'enviar'],
 
     // --- Relatório de Avarias ---
-    'relatorio-avarias' => ['auth' => true, 'papel' => ['automacao' => 'relatorio_avarias', 'minimo' => 'usuario'], 'controller' => RelatorioAvariasController::class, 'acao' => 'tela'],
-    'relatorio-avarias-clientes' => ['auth' => true, 'papel' => ['automacao' => 'relatorio_avarias', 'minimo' => 'usuario'], 'controller' => RelatorioAvariasController::class, 'acao' => 'buscarClientes'],
-    'relatorio-avarias-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'relatorio_avarias', 'minimo' => 'usuario'], 'controller' => RelatorioAvariasController::class, 'acao' => 'enviar'],
+    'relatorio-avarias' => ['auth' => true, 'papel' => ['automacao' => 'relatorio_avarias', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'tela'],
+    'relatorio-avarias-clientes' => ['auth' => true, 'papel' => ['automacao' => 'relatorio_avarias', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'buscarClientes'],
+    'relatorio-avarias-enviar' => ['auth' => true, 'metodo' => 'POST', 'papel' => ['automacao' => 'relatorio_avarias', 'minimo' => 'usuario'], 'controller' => AutomacaoController::class, 'acao' => 'enviar'],
 
     // --- Administração ---
     // Logs, Clientes e Cronograma liberam pra quem é admin de pelo
@@ -106,6 +103,8 @@ return [
     // --- Configuração de Automações (Webhooks e Payloads) ---
     'admin-automacao-config' => ['auth' => true, 'controller' => AutomacaoConfigController::class, 'acao' => 'tela'],
     'admin-automacao-config-editar' => ['auth' => true, 'controller' => AutomacaoConfigController::class, 'acao' => 'editar'],
+    'admin-automacao-config-webhook' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'salvarWebhook'],
+    'admin-automacao-config-campos-salvar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'salvarCamposSelecionados'],
     
     // Campos do Payload
     'admin-automacao-config-campo-criar' => ['auth' => true, 'metodo' => 'POST', 'controller' => AutomacaoConfigController::class, 'acao' => 'criarCampo'],

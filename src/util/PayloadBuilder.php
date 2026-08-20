@@ -43,24 +43,65 @@ class PayloadBuilder
     }
 
     /**
-     * Construir o payload completo
+     * Construir o payload completo com dados da execução
+     * 
+     * @return array{sucesso: bool, payload: ?array, mensagem: ?string}
      */
-    public function construir(): array
-    {
-        if (empty($this->campos)) {
-            return ['payload' => [], 'sucesso' => true, 'erros' => []];
-        }
+    public function construir(
+        int $automacaoId,
+        int $clienteId,
+        string $emailDestino,
+        string $modo,
+        int $execucaoId
+    ): array {
+        try {
+            // Carregar configuração da automação
+            $this->campos = $this->dao->buscarCampos($automacaoId);
+            $this->regras = $this->dao->buscarRegras($automacaoId);
 
-        // Processar cada campo em ordem de posição
-        foreach ($this->campos as $campo) {
-            $this->processarCampo($campo);
-        }
+            // Se não tem campos configurados, retorna vazio
+            if (empty($this->campos)) {
+                return [
+                    'sucesso' => true,
+                    'payload' => [],
+                    'mensagem' => null,
+                ];
+            }
 
-        return [
-            'payload' => $this->payload,
-            'sucesso' => empty($this->erros),
-            'erros' => $this->erros,
-        ];
+            // Dados básicos disponíveis para transformações
+            $this->dadosEntrada = [
+                'execucaoId' => $execucaoId,
+                'clienteId' => $clienteId,
+                'emailDestino' => $emailDestino,
+                'modo' => $modo,
+            ];
+
+            // Processar cada campo configurado
+            foreach ($this->campos as $campo) {
+                $this->processarCampo($campo);
+            }
+
+            // Se houve erros durante processamento, retornar erro
+            if (!empty($this->erros)) {
+                return [
+                    'sucesso' => false,
+                    'payload' => null,
+                    'mensagem' => implode('; ', $this->erros),
+                ];
+            }
+
+            return [
+                'sucesso' => true,
+                'payload' => $this->payload,
+                'mensagem' => null,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'sucesso' => false,
+                'payload' => null,
+                'mensagem' => 'Erro ao construir payload: ' . $e->getMessage(),
+            ];
+        }
     }
 
     /**

@@ -37,6 +37,16 @@ class AutomacaoConfigController
         ControleAcesso::exigirAdminDeAlgumaAutomacao();
 
         $automacoes = $this->automacaoDao->listarTodas();
+        
+        // Carregar configs para cada automação
+        foreach ($automacoes as &$automacao) {
+            $config = $this->rn->buscarConfigCompleta($automacao['id']);
+            $automacao['campos'] = $config['campos'] ?? [];
+            $automacao['regras'] = $config['regras'] ?? [];
+            $automacao['headers'] = $config['headers'] ?? [];
+        }
+        unset($automacao);
+        
         $paginaAtiva = 'admin-automacao-config';
         $tituloPagina = 'Administração · Configurar Automações';
 
@@ -51,20 +61,86 @@ class AutomacaoConfigController
         ControleAcesso::exigirAdminDeAlgumaAutomacao();
 
         $automacaoId = (int) ($_GET['id'] ?? 0);
+        
+        error_log('DEBUG editar INICIO: automacaoId=' . $automacaoId . ' | GET id=' . ($_GET['id'] ?? 'NULL'));
+        
         if ($automacaoId <= 0) {
+            error_log('DEBUG editar ERRO: ID inválido, voltando com erro');
             $this->voltarComErro('ID de automação inválido.');
         }
 
         $automacao = $this->automacaoDao->buscarPorId($automacaoId);
+        
+        error_log('DEBUG editar busca banco: automacao=' . json_encode($automacao, JSON_UNESCAPED_UNICODE));
+        
         if (!$automacao) {
+            error_log('DEBUG editar ERRO: Automação não encontrada no banco');
             $this->voltarComErro('Automação não encontrada.');
         }
+
+        error_log('DEBUG editar ANTES require: automacao[id]=' . ($automacao['id'] ?? 'NULL'));
 
         $config = $this->rn->buscarConfigCompleta($automacaoId);
         $paginaAtiva = 'admin-automacao-config';
         $tituloPagina = 'Configurar: ' . $automacao['nome'];
 
         require __DIR__ . '/../../views/admin/automacao-config-form.php';
+    }
+
+    public function salvarWebhook(): void
+    {
+        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+
+        if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
+        }
+
+        $automacaoId = (int) ($_POST['automacao_id'] ?? 0);
+        $webhookUrl = trim($_POST['webhook_url'] ?? '');
+        $webhookMetodo = trim($_POST['webhook_metodo'] ?? 'POST');
+
+        if ($automacaoId <= 0 || empty($webhookUrl)) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Dados inválidos.'], 422);
+        }
+
+        if (!in_array($webhookMetodo, ['GET', 'POST', 'PUT', 'PATCH'])) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Método HTTP inválido.'], 422);
+        }
+
+        // Atualizar no banco
+        $this->automacaoDao->atualizarWebhook($automacaoId, $webhookUrl, $webhookMetodo);
+
+        Saida::json(['sucesso' => true, 'mensagem' => 'Webhook salvo com sucesso']);
+    }
+
+    public function salvarCamposSelecionados(): void
+    {
+        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+
+        if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
+        }
+
+        $automacaoId = (int) ($_POST['automacao_id'] ?? 0);
+        $camposJson = $_POST['campos'] ?? '[]';
+        
+        if ($automacaoId <= 0) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Automação inválida.'], 422);
+        }
+
+        try {
+            $campos = json_decode($camposJson, true);
+            if (!is_array($campos)) {
+                $campos = [];
+            }
+
+            // Limpar campos antigos e inserir novos
+            $this->rn->salvarCamposSelecionados($automacaoId, $campos);
+
+            Saida::json(['sucesso' => true, 'mensagem' => 'Campos salvos com sucesso']);
+        } catch (\Exception $e) {
+            Saida::json(['sucesso' => false, 'mensagem' => 'Erro ao salvar: ' . $e->getMessage()], 500);
+        }
     }
 
     // ========================================================================
