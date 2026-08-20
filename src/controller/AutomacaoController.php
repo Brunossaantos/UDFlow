@@ -26,11 +26,9 @@ class AutomacaoController
     public function __construct()
     {
         $this->chave = $this->obterChaveViaRota();
-        error_log('DEBUG AutomacaoController constructor: chave=' . $this->chave);
-        
+
         $automacao = (new AutomacaoDao())->buscarPorChave($this->chave);
-        error_log('DEBUG AutomacaoController constructor: automacao=' . json_encode($automacao));
-        
+
         $this->automacao = $automacao ?? throw new \Exception("Automação '{$this->chave}' não encontrada");
     }
 
@@ -73,20 +71,17 @@ class AutomacaoController
             ControleAcesso::exigirPapel($this->chave, 'usuario');
 
             $termo = trim($_GET['termo'] ?? '');
-            error_log('DEBUG buscarClientes: termo=' . $termo . ', chave=' . $this->chave);
-            
+
             $execucaoRn = new \Udflow\rn\ExecucaoRn();
             $clientes = $execucaoRn->buscarClientesParaAutocomplete($termo, $this->chave);
-            error_log('DEBUG buscarClientes: clientes=' . json_encode($clientes));
 
             Saida::json(['clientes' => array_map(fn ($c) => [
-                'id' => $c['id'] ?? $c->id ?? null,
-                'nome' => $c['nome_exibicao'] ?? $c->nomeExibicao ?? null,
-                'codigo' => $c['codigo_cliente'] ?? $c->codigoCliente ?? null,
-                'unidade' => $c['unidade_nome'] ?? $c->unidadeNome ?? null,
+                'id' => $c->id ?? null,
+                'nome' => $c->nomeExibicao ?? null,
+                'codigo' => $c->codigoCliente ?? null,
+                'unidade' => $c->unidadeNome ?? null,
             ], $clientes)]);
         } catch (\Exception $e) {
-            error_log('DEBUG buscarClientes ERROR: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
             Saida::json(['erro' => $e->getMessage()], 500);
         }
     }

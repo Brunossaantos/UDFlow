@@ -10,10 +10,6 @@
 use Udflow\util\Saida;
 use Udflow\util\Csrf;
 
-// DEBUG
-error_log('DEBUG automacao-config-form VIEW: automacao=' . json_encode($automacao, JSON_UNESCAPED_UNICODE));
-error_log('DEBUG automacao-config-form VIEW: automacao[id]=' . ($automacao['id'] ?? 'NULL'));
-
 $paginaAtiva = 'admin-automacao-config';
 $tituloPagina = 'Configurar: ' . ($automacao['nome'] ?? 'Automação desconhecida');
 require __DIR__ . '/../partials/cabecalho.php';
@@ -88,16 +84,8 @@ $tiposRegra = ['fixed_value', 'map_from_banco', 'timestamp', 'uuid', 'expression
   
   <form onsubmit="salvarCamposSelecionados(event)" class="space-y-6">
     <input type="hidden" name="csrf_token" value="<?= Saida::e($_SESSION['csrf_token'] ?? '') ?>">
-    <input type="hidden" name="automacao_id" value="<?= intval($automacao['id'] ?? 0) ?>" id="debug-automacao-id">
-    
-    <!-- DEBUG VISUAL -->
-    <div class="bg-red-500/10 border border-red-500/20 rounded p-2 mb-2">
-      <p class="text-xs text-red-600">
-        DEBUG: $automacao['id'] = <?= intval($automacao['id'] ?? 0) ?>
-        | input value = <span id="input-value">checking</span>
-      </p>
-    </div>
-    
+    <input type="hidden" name="automacao_id" value="<?= intval($automacao['id'] ?? 0) ?>">
+
     <p class="text-xs text-tsecondary mb-4">Selecione quais campos serão enviados no webhook. Você pode marcar vários de uma vez.</p>
 
     <!-- Campos de Execução -->
@@ -576,14 +564,7 @@ async function salvarCamposSelecionados(e) {
   const automacaoId = parseInt(formData.get('automacao_id'));
   const campos = formData.getAll('campos[]');
   const csrf = formData.get('csrf_token');
-  
-  // Debug detalhado
-  console.log('DEBUG: e.target =', e.target);
-  console.log('DEBUG: formData.get("automacao_id") =', formData.get('automacao_id'));
-  console.log('DEBUG: parseInt(...) =', automacaoId);
-  console.log('DEBUG: campos =', campos);
-  console.log('DEBUG: csrf =', csrf);
-  
+
   if (automacaoId <= 0) {
     toast('Automação inválida', 'erro');
     return;
@@ -603,9 +584,7 @@ async function salvarCamposSelecionados(e) {
       csrf_token: csrf
     })
   }).then(r => r.json()).catch(err => ({ sucesso: false, mensagem: 'Erro na requisição' }));
-  
-  console.log('DEBUG: resultado =', resultado);
-  
+
   if (resultado.sucesso) {
     toast('Campos salvos com sucesso');
     setTimeout(() => location.reload(), 1000);
@@ -615,8 +594,6 @@ async function salvarCamposSelecionados(e) {
 }
 
 // Carregar logs ao abrir a página
-const inputValue = document.getElementById('debug-automacao-id').value;
-document.getElementById('input-value').textContent = inputValue;
 carregarLogs(<?= intval($automacao['id'] ?? 0) ?>);
 </script>
 

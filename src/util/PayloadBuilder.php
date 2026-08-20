@@ -239,23 +239,24 @@ class PayloadBuilder
         $coluna = $config['coluna'] ?? null;
         $condicao = $config['condicao'] ?? null;
 
-        if (!$tabela || !$coluna) {
+        if (!$tabela || !$coluna || !$condicao) {
             return ['sucesso' => false, 'erro' => 'Configuração incompleta de map_from_banco.'];
         }
 
-        // Preparar condição com dados de entrada
+        // Preparar condição com dados de entrada, coletando só os parâmetros usados (na ordem em que aparecem)
         $condicaoPreparada = $condicao;
+        $parametros = [];
         foreach ($this->dadosEntrada as $chave => $valor) {
-            $condicaoPreparada = str_replace(':' . $chave, '?', $condicaoPreparada);
+            if (strpos($condicaoPreparada, ':' . $chave) !== false) {
+                $condicaoPreparada = str_replace(':' . $chave, '?', $condicaoPreparada);
+                $parametros[] = $valor;
+            }
         }
 
-        $sql = "SELECT {$coluna} FROM {$tabela} WHERE {$condicao}";
+        $sql = "SELECT {$coluna} FROM {$tabela} WHERE {$condicaoPreparada}";
 
         try {
             $stmt = $this->pdo->prepare($sql);
-
-            // Bind dos parâmetros da condição
-            $parametros = array_values($this->dadosEntrada);
             $stmt->execute($parametros);
 
             $resultado = $stmt->fetchColumn();

@@ -61,24 +61,16 @@ class AutomacaoConfigController
         ControleAcesso::exigirAdminDeAlgumaAutomacao();
 
         $automacaoId = (int) ($_GET['id'] ?? 0);
-        
-        error_log('DEBUG editar INICIO: automacaoId=' . $automacaoId . ' | GET id=' . ($_GET['id'] ?? 'NULL'));
-        
+
         if ($automacaoId <= 0) {
-            error_log('DEBUG editar ERRO: ID inválido, voltando com erro');
             $this->voltarComErro('ID de automação inválido.');
         }
 
         $automacao = $this->automacaoDao->buscarPorId($automacaoId);
-        
-        error_log('DEBUG editar busca banco: automacao=' . json_encode($automacao, JSON_UNESCAPED_UNICODE));
-        
+
         if (!$automacao) {
-            error_log('DEBUG editar ERRO: Automação não encontrada no banco');
             $this->voltarComErro('Automação não encontrada.');
         }
-
-        error_log('DEBUG editar ANTES require: automacao[id]=' . ($automacao['id'] ?? 'NULL'));
 
         $config = $this->rn->buscarConfigCompleta($automacaoId);
         $paginaAtiva = 'admin-automacao-config';

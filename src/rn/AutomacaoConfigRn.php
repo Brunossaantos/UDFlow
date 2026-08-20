@@ -475,20 +475,57 @@ class AutomacaoConfigRn
      */
     public function salvarCamposSelecionados(int $automacaoId, array $camposSelecionados): void
     {
-        // Limpar campos antigos
+        // Limpar campos e regras antigos (regras ficam presas ao campo_id antigo)
         $this->dao->deletarCampos($automacaoId);
+        $this->dao->deletarRegrasPorAutomacao($automacaoId);
 
         // Inserir novos campos selecionados
         $posicao = 1;
         foreach ($camposSelecionados as $nomeCampo) {
-            $this->dao->criarCampo(
+            $campoId = $this->dao->criarCampo(
                 automacaoId: $automacaoId,
                 nomeCampo: $nomeCampo,
                 tipoDado: $this->obterTipoDado($nomeCampo),
                 obrigatorio: $this->ehObrigatorio($nomeCampo),
                 posicao: $posicao++
             );
+
+            // Campos vindos do banco (cliente/unidade/config visual) precisam
+            // de uma regra map_from_banco para o PayloadBuilder saber de onde tirar o valor.
+            $mapeamento = $this->obterMapeamentoBanco($nomeCampo);
+            if ($mapeamento !== null) {
+                $this->dao->criarRegra(
+                    automacaoId: $automacaoId,
+                    tipoRegra: 'map_from_banco',
+                    configuracao: $mapeamento,
+                    campoId: $campoId,
+                    ordemExecucao: 10,
+                    ativo: true
+                );
+            }
         }
+    }
+
+    /**
+     * Mapeamento dos campos "conhecidos" (vindos de tb_clientes, tb_unidades
+     * e tb_clientes_kpi_config) para a regra map_from_banco correspondente.
+     * Campos que não estejam aqui (execucaoId, emailDestino, modo, etc)
+     * já vêm prontos dos dados de entrada da execução.
+     */
+    private function obterMapeamentoBanco(string $nomeCampo): ?array
+    {
+        return match ($nomeCampo) {
+            'codigo_cliente' => ['tabela' => 'tb_clientes', 'coluna' => 'codigo_cliente', 'condicao' => 'id = :clienteId'],
+            'codigo_talent' => ['tabela' => 'tb_clientes', 'coluna' => 'codigo_talent', 'condicao' => 'id = :clienteId'],
+            'razao_social' => ['tabela' => 'tb_clientes', 'coluna' => 'razao_social', 'condicao' => 'id = :clienteId'],
+            'nome_exibicao' => ['tabela' => 'tb_clientes', 'coluna' => 'nome_exibicao', 'condicao' => 'id = :clienteId'],
+            'cnpj' => ['tabela' => 'tb_clientes', 'coluna' => 'cnpj', 'condicao' => 'id = :clienteId'],
+            'unidade_codigo' => ['tabela' => 'tb_unidades', 'coluna' => 'nome', 'condicao' => 'id = (SELECT unidade_id FROM tb_clientes WHERE id = :clienteId)'],
+            'logo_url' => ['tabela' => 'tb_clientes_kpi_config', 'coluna' => 'logo_url', 'condicao' => 'cliente_id = :clienteId'],
+            'cor_primaria' => ['tabela' => 'tb_clientes_kpi_config', 'coluna' => 'cor_primaria', 'condicao' => 'cliente_id = :clienteId'],
+            'cor_secundaria' => ['tabela' => 'tb_clientes_kpi_config', 'coluna' => 'cor_secundaria', 'condicao' => 'cliente_id = :clienteId'],
+            default => null,
+        };
     }
 
     /**
