@@ -7,6 +7,7 @@ use Udflow\dao\ExecucaoDao;
 use Udflow\dao\AutomacaoDao;
 use Udflow\util\PayloadBuilder;
 use Udflow\util\PayloadValidator;
+use Udflow\util\LogSistema;
 
 /**
  * Regra comum para execução das automações.
@@ -216,6 +217,11 @@ class ExecucaoRn
 
         if (!$payloadResult['sucesso']) {
             $this->execucaoDao->atualizarStatus($execucaoId, 'erro', 'Erro ao construir payload: ' . $payloadResult['mensagem']);
+            LogSistema::registrar('error', 'Erro ao construir payload: ' . $payloadResult['mensagem'], null, null, [
+                'automacao' => $automacaoChave,
+                'execucao_id' => $execucaoId,
+                'cliente_id' => $clienteId,
+            ]);
             return [
                 'sucesso' => false,
                 'mensagem' => $payloadResult['mensagem'] ?? 'Erro ao construir payload',
@@ -231,6 +237,12 @@ class ExecucaoRn
         $errosValidacao = $validator->validar($payload, (int) $automacao['id']);
         if (!empty($errosValidacao)) {
             $this->execucaoDao->atualizarStatus($execucaoId, 'erro', 'Validação de payload falhou: ' . json_encode($errosValidacao));
+            LogSistema::registrar('error', 'Validação de payload falhou.', null, null, [
+                'automacao' => $automacaoChave,
+                'execucao_id' => $execucaoId,
+                'cliente_id' => $clienteId,
+                'erros' => $errosValidacao,
+            ]);
             return [
                 'sucesso' => false,
                 'mensagem' => 'Payload inválido: ' . implode(', ', $errosValidacao),
@@ -256,6 +268,13 @@ class ExecucaoRn
                 'erro',
                 'Não foi possível acionar o n8n.'
             );
+
+            LogSistema::registrar('error', 'Não foi possível acionar o n8n.', null, null, [
+                'automacao' => $automacaoChave,
+                'execucao_id' => $execucaoId,
+                'cliente_id' => $clienteId,
+                'webhook_url' => $automacao['webhook_url'],
+            ]);
 
             return [
                 'sucesso' => false,

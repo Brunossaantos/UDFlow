@@ -156,7 +156,7 @@ $tiposRegra = ['fixed_value', 'map_from_banco', 'timestamp', 'uuid', 'expression
 
     <!-- Configuração Visual -->
     <div class="border border-bordsoft rounded-lg p-4">
-      <h3 class="text-sm font-semibold text-flow mb-3">🎨 Configuração Visual (tb_clientes_kpi_config)</h3>
+      <h3 class="text-sm font-semibold text-flow mb-3">🎨 Configuração Visual (tb_clientes_config)</h3>
       <div class="space-y-2">
         <label class="flex items-center gap-2 cursor-pointer">
           <input type="checkbox" name="campos[]" value="logo_url" class="w-4 h-4 rounded border-bord bg-surface" <?= in_array('logo_url', $camposSalvos) ? 'checked' : '' ?>>

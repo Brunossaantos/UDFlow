@@ -48,8 +48,8 @@ class Mailer
             return true;
         } catch (PHPMailerException $e) {
             // não deixa o erro de SMTP vazar pra tela (pode conter host/usuário) -
-            // só loga em arquivo e devolve false pra quem chamou decidir o que fazer
-            error_log('Falha ao enviar e-mail para ' . $destinatario . ': ' . $mail->ErrorInfo);
+            // só loga e devolve false pra quem chamou decidir o que fazer
+            LogSistema::registrar('error', 'Falha ao enviar e-mail para ' . $destinatario . ': ' . $mail->ErrorInfo);
 
             return false;
         }

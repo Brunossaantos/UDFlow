@@ -20,7 +20,10 @@ $tituloPagina = $this->automacao['nome'] ?? 'Automação';
 require __DIR__ . '/partials/cabecalho.php';
 
 // Dados que vêm do banco (tb_automacoes)
-$chaveRota = $this->chave;
+// IMPORTANTE: usa a rota da URL (?pagina=programacao-semanal), não a
+// chave do banco (programacao_semanal) - o JS monta "{chaveRota}-clientes"
+// e essa rota é definida em config/rotas.php com hífen, não underscore.
+$chaveRota = $_GET['pagina'] ?? $this->chave;
 $rotuloBotao = $this->automacao['label_botao'] ?? 'Executar agora';
 $avisoEmailUdlog = $this->automacao['aviso_email_udlog'] ?? false;
 $avisoProximoDisparo = $this->automacao['aviso_proximo_disparo'] 

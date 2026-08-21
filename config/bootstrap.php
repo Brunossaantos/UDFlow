@@ -19,6 +19,8 @@ date_default_timezone_set('America/Sao_Paulo');
 
 $ambienteProducao = ($_ENV['APP_AMBIENTE'] ?? 'producao') === 'producao';
 
+\Udflow\util\LogSistema::registrarManipuladoresGlobais($ambienteProducao);
+
 if ($ambienteProducao) {
     // em produção a gente não mostra stack trace pro usuário final,
     // só loga em arquivo mesmo

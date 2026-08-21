@@ -115,9 +115,7 @@ class CronogramaRn
             return ['sucesso' => false, 'mensagem' => "Cadastra o e-mail do responsável de {$item['cliente_nome']} antes de executar."];
         }
 
-        $rn = $item['automacao_chave'] === 'kpi' ? new KpiExecucaoRn() : new ExecucaoRn();
-
-        return $rn->executarManual(
+        return (new ExecucaoRn())->executarManual(
             $item['automacao_chave'],
             (int) $item['cliente_id'],
             $item['email_responsavel'],

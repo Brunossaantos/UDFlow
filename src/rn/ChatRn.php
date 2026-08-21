@@ -131,7 +131,9 @@ class ChatRn
         curl_close($curl);
 
         if ($erro !== '' || $codigoHttp < 200 || $codigoHttp >= 300) {
-            error_log("Falha ao chamar a API do chat (HTTP {$codigoHttp}): {$erro} - {$respostaBruta}");
+            \Udflow\util\LogSistema::registrar('error', "Falha ao chamar a API do chat (HTTP {$codigoHttp}): {$erro}", null, null, [
+                'resposta' => substr((string) $respostaBruta, 0, 2000),
+            ]);
             return null;
         }
 

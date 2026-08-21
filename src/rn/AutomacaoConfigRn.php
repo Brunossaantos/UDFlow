@@ -508,7 +508,7 @@ class AutomacaoConfigRn
 
     /**
      * Mapeamento dos campos "conhecidos" (vindos de tb_clientes, tb_unidades
-     * e tb_clientes_kpi_config) para a regra map_from_banco correspondente.
+     * e tb_clientes_config) para a regra map_from_banco correspondente.
      * Campos que não estejam aqui (execucaoId, emailDestino, modo, etc)
      * já vêm prontos dos dados de entrada da execução.
      */
@@ -521,9 +521,9 @@ class AutomacaoConfigRn
             'nome_exibicao' => ['tabela' => 'tb_clientes', 'coluna' => 'nome_exibicao', 'condicao' => 'id = :clienteId'],
             'cnpj' => ['tabela' => 'tb_clientes', 'coluna' => 'cnpj', 'condicao' => 'id = :clienteId'],
             'unidade_codigo' => ['tabela' => 'tb_unidades', 'coluna' => 'nome', 'condicao' => 'id = (SELECT unidade_id FROM tb_clientes WHERE id = :clienteId)'],
-            'logo_url' => ['tabela' => 'tb_clientes_kpi_config', 'coluna' => 'logo_url', 'condicao' => 'cliente_id = :clienteId'],
-            'cor_primaria' => ['tabela' => 'tb_clientes_kpi_config', 'coluna' => 'cor_primaria', 'condicao' => 'cliente_id = :clienteId'],
-            'cor_secundaria' => ['tabela' => 'tb_clientes_kpi_config', 'coluna' => 'cor_secundaria', 'condicao' => 'cliente_id = :clienteId'],
+            'logo_url' => ['tabela' => 'tb_clientes_config', 'coluna' => 'logo_url', 'condicao' => 'cliente_id = :clienteId'],
+            'cor_primaria' => ['tabela' => 'tb_clientes_config', 'coluna' => 'cor_primaria', 'condicao' => 'cliente_id = :clienteId'],
+            'cor_secundaria' => ['tabela' => 'tb_clientes_config', 'coluna' => 'cor_secundaria', 'condicao' => 'cliente_id = :clienteId'],
             default => null,
         };
     }

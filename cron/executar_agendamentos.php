@@ -18,7 +18,6 @@ require_once __DIR__ . '/../config/bootstrap-cli.php';
 
 use Udflow\dao\CronogramaDao;
 use Udflow\rn\ExecucaoRn;
-use Udflow\rn\KpiExecucaoRn;
 
 $agora = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
 $horarioAtual = $agora->format('H:i:00');
@@ -33,9 +32,7 @@ foreach ($itens as $item) {
         continue;
     }
 
-    $rn = $item['automacao_chave'] === 'kpi' ? new KpiExecucaoRn() : new ExecucaoRn();
-
-    $resultado = $rn->executarAutomatico(
+    $resultado = (new ExecucaoRn())->executarAutomatico(
         $item['automacao_chave'],
         (int) $item['cliente_id'],
         $item['email_responsavel']

@@ -183,7 +183,7 @@ class ClienteDao
 
     public function buscarKpiConfig(int $clienteId): ?array
     {
-        $sql = 'SELECT * FROM tb_clientes_kpi_config WHERE cliente_id = :cliente_id LIMIT 1';
+        $sql = 'SELECT * FROM tb_clientes_config WHERE cliente_id = :cliente_id LIMIT 1';
 
         $consulta = $this->pdo->prepare($sql);
         $consulta->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
@@ -198,7 +198,7 @@ class ClienteDao
     {
         // "upsert": se já existe config pra esse cliente, atualiza; senão, cria.
         // ON DUPLICATE KEY funciona aqui porque cliente_id é UNIQUE na tabela.
-        $sql = 'INSERT INTO tb_clientes_kpi_config (cliente_id, logo_url, cor_primaria, cor_secundaria)
+        $sql = 'INSERT INTO tb_clientes_config (cliente_id, logo_url, cor_primaria, cor_secundaria)
                 VALUES (:cliente_id, :logo_url, :cor_primaria, :cor_secundaria)
                 ON DUPLICATE KEY UPDATE
                     logo_url = :logo_url2,

@@ -57,6 +57,8 @@ class ExecucaoDao
     /** Alimenta a tabela "minhas solicitações" - só as do usuário logado */
     public function listarDoUsuario(int $usuarioId, string $automacaoChave, int $limite = 20): array
     {
+        $this->expirarPendentesAntigas();
+
         $sql = 'SELECT e.*, c.nome_exibicao AS cliente_nome
                 FROM tb_execucoes e
                 JOIN tb_clientes c ON c.id = e.cliente_id
@@ -72,6 +74,27 @@ class ExecucaoDao
         $consulta->execute();
 
         return $consulta->fetchAll();
+    }
+
+    /**
+     * O n8n chama o callback quando termina - mas se cair, travar ou
+     * nunca responder, a execução ficaria "pendente"/"processando"
+     * pra sempre. Toda leitura da lista de execuções passa por aqui
+     * primeiro e "expira" quem passou de 3 minutos sem resposta,
+     * virando erro com uma mensagem clara pro usuário.
+     */
+    public function expirarPendentesAntigas(int $minutosLimite = 3): void
+    {
+        $sql = "UPDATE tb_execucoes
+                SET status = 'erro',
+                    mensagem_erro = 'Não foi possível gerar. O sistema demorou demais para responder.',
+                    finalizado_em = NOW()
+                WHERE status IN ('pendente', 'processando')
+                  AND criado_em < DATE_SUB(NOW(), INTERVAL :minutos MINUTE)";
+
+        $comando = $this->pdo->prepare($sql);
+        $comando->bindValue(':minutos', $minutosLimite, PDO::PARAM_INT);
+        $comando->execute();
     }
 
     /** Alimenta a tela de admin "Logs e status" - todo mundo, com filtros opcionais */

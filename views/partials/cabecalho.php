@@ -210,14 +210,21 @@ $iconesPorAutomacao = [
               </svg>
               Automações
             </a>
+            <a href="index.php?pagina=admin-logs-sistema" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-logs-sistema' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M10.29 3.86l-8.18 14.14A1.5 1.5 0 003.4 20.5h17.2a1.5 1.5 0 001.29-2.5L13.71 3.86a1.5 1.5 0 00-2.42 0z" />
+                <path d="M12 9v4M12 17h.01" />
+              </svg>
+              Logs do sistema
+            </a>
+            <a href="index.php?pagina=admin-automacao-config" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-automacao-config' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="1.5" />
+                <path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.98 2.98l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m2.98-2.98l4.24-4.24M19.78 19.78l-4.24-4.24m-2.98-2.98l-4.24-4.24" />
+              </svg>
+              Configurar Automações
+            </a>
           <?php endif; ?>
-          <a href="index.php?pagina=admin-automacao-config" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-automacao-config' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="12" cy="12" r="1.5" />
-              <path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.98 2.98l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m2.98-2.98l4.24-4.24M19.78 19.78l-4.24-4.24m-2.98-2.98l-4.24-4.24" />
-            </svg>
-            Configurar Automações
-          </a>
           <a href="index.php?pagina=admin-logs" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-logs' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M9 2H4v5M9 22H4v-5M15 2h5v5M15 22h5v-5M3 12h18M3 8h18M3 16h18" />

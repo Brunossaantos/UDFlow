@@ -16,3 +16,6 @@ $dotenv->load();
 $dotenv->required(['DB_HOST', 'DB_NOME', 'DB_USUARIO', 'APP_PEPPER']);
 
 date_default_timezone_set('America/Sao_Paulo');
+
+$ambienteProducao = ($_ENV['APP_AMBIENTE'] ?? 'producao') === 'producao';
+\Udflow\util\LogSistema::registrarManipuladoresGlobais($ambienteProducao);

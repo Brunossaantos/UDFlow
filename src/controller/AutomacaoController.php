@@ -38,9 +38,9 @@ class AutomacaoController
     private function obterChaveViaRota(): string
     {
         $pagina = $_GET['pagina'] ?? '';
-        
-        // Remover sufixos de ação (-clientes, -enviar)
-        $chaveBase = preg_replace('/-clientes|-enviar$/', '', $pagina);
+
+        // Remover sufixos de ação (-clientes, -enviar, -status)
+        $chaveBase = preg_replace('/-clientes$|-enviar$|-status$/', '', $pagina);
         
         // Mapear rotas alternativas
         $mapeamento = [
@@ -84,6 +84,17 @@ class AutomacaoController
         } catch (\Exception $e) {
             Saida::json(['erro' => $e->getMessage()], 500);
         }
+    }
+
+    /** Endpoint chamado via fetch() periodicamente pra atualizar "minhas solicitações" sozinho */
+    public function statusExecucoes(): void
+    {
+        ControleAcesso::exigirPapel($this->chave, 'usuario');
+
+        $execucaoDao = new ExecucaoDao();
+        $execucoes = $execucaoDao->listarDoUsuario(ControleAcesso::usuarioLogadoId(), $this->chave);
+
+        Saida::json(['execucoes' => $execucoes]);
     }
 
     public function enviar(): void

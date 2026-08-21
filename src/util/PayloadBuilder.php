@@ -5,10 +5,11 @@ namespace Udflow\util;
 use Udflow\dao\AutomacaoConfigDao;
 use Udflow\config\Conexao;
 use PDO;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
  * PayloadBuilder
- * 
+ *
  * Constrói payloads JSON dinâmicos com base nas configurações de automações.
  * Aplica transformações (map_from_banco, timestamp, uuid, expressions, etc).
  */
@@ -16,6 +17,7 @@ class PayloadBuilder
 {
     private AutomacaoConfigDao $dao;
     private PDO $pdo;
+    private ExpressionLanguage $expressionLanguage;
     private array $campos = [];
     private array $regras = [];
     private array $dadosEntrada = [];
@@ -26,6 +28,7 @@ class PayloadBuilder
     {
         $this->dao = new AutomacaoConfigDao();
         $this->pdo = Conexao::pegar();
+        $this->expressionLanguage = new ExpressionLanguage();
     }
 
     /**
@@ -308,7 +311,10 @@ class PayloadBuilder
     }
 
     /**
-     * Regra: expression - executar expressão PHP
+     * Regra: expression - avaliar uma expressão (não é mais PHP puro/eval,
+     * usa a linguagem de expressões do Symfony - sem acesso a funções do
+     * PHP, só operadores, comparações e as variáveis "input" e "payload").
+     * Ex: "input['clienteId'] > 0", "payload['nome'] ~ ' - filial'".
      */
     private function regraExpression(array $config): array
     {
@@ -319,13 +325,12 @@ class PayloadBuilder
         }
 
         try {
-            // Criar escopo com dados de entrada como variáveis
-            extract($this->dadosEntrada, EXTR_PREFIX_ALL, 'input');
-            extract($this->payload, EXTR_PREFIX_ALL, 'payload');
-
-            $valor = eval("return {$codigo}");
+            $valor = $this->expressionLanguage->evaluate($codigo, [
+                'input' => $this->dadosEntrada,
+                'payload' => $this->payload,
+            ]);
             return ['sucesso' => true, 'valor' => $valor];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return ['sucesso' => false, 'erro' => "Erro ao executar expressão: {$e->getMessage()}"];
         }
     }
@@ -356,7 +361,8 @@ class PayloadBuilder
     }
 
     /**
-     * Regra: if_condition - condicional
+     * Regra: if_condition - condicional (mesma linguagem de expressões
+     * da regra "expression", ver comentário acima)
      */
     private function regraIfCondition(array $config): array
     {
@@ -369,15 +375,14 @@ class PayloadBuilder
         }
 
         try {
-            // Criar escopo com dados de entrada
-            extract($this->dadosEntrada, EXTR_PREFIX_ALL, 'input');
-            extract($this->payload, EXTR_PREFIX_ALL, 'payload');
-
-            $resultado = eval("return {$condicao};");
+            $resultado = $this->expressionLanguage->evaluate($condicao, [
+                'input' => $this->dadosEntrada,
+                'payload' => $this->payload,
+            ]);
             $valor = $resultado ? $valorTrue : $valorFalse;
 
             return ['sucesso' => true, 'valor' => $valor];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return ['sucesso' => false, 'erro' => "Erro ao avaliar condição: {$e->getMessage()}"];
         }
     }

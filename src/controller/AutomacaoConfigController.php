@@ -34,7 +34,7 @@ class AutomacaoConfigController
      */
     public function tela(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         $automacoes = $this->automacaoDao->listarTodas();
         
@@ -58,7 +58,7 @@ class AutomacaoConfigController
      */
     public function editar(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         $automacaoId = (int) ($_GET['id'] ?? 0);
 
@@ -81,7 +81,7 @@ class AutomacaoConfigController
 
     public function salvarWebhook(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -107,7 +107,7 @@ class AutomacaoConfigController
 
     public function salvarCamposSelecionados(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -144,7 +144,7 @@ class AutomacaoConfigController
      */
     public function criarCampo(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -190,7 +190,7 @@ class AutomacaoConfigController
      */
     public function atualizarCampo(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -233,7 +233,7 @@ class AutomacaoConfigController
      */
     public function deletarCampo(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -259,7 +259,7 @@ class AutomacaoConfigController
      */
     public function criarRegra(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -328,7 +328,7 @@ class AutomacaoConfigController
      */
     public function atualizarRegra(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -395,7 +395,7 @@ class AutomacaoConfigController
      */
     public function deletarRegra(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -421,7 +421,7 @@ class AutomacaoConfigController
      */
     public function criarHeader(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -456,7 +456,7 @@ class AutomacaoConfigController
      */
     public function atualizarHeader(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -489,7 +489,7 @@ class AutomacaoConfigController
      */
     public function deletarHeader(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         if (!Csrf::validarToken($_POST['csrf_token'] ?? null)) {
             Saida::json(['sucesso' => false, 'mensagem' => 'Sessão expirada.'], 419);
@@ -515,7 +515,7 @@ class AutomacaoConfigController
      */
     public function verLogs(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         $automacaoId = (int) ($_GET['automacao_id'] ?? 0);
         if ($automacaoId <= 0) {
@@ -537,7 +537,7 @@ class AutomacaoConfigController
      */
     public function verLogsComErro(): void
     {
-        ControleAcesso::exigirAdminDeAlgumaAutomacao();
+        ControleAcesso::exigirSuperAdmin();
 
         $automacaoId = (int) ($_GET['automacao_id'] ?? 0);
         if ($automacaoId <= 0) {

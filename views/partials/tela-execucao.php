@@ -81,7 +81,7 @@ $statusLabel = [
         <th class="font-medium px-5 py-3">Data</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="corpo-execucoes">
       <?php if (empty($minhasExecucoes)): ?>
         <tr><td colspan="5" class="px-5 py-10 text-center text-tmuted text-sm">Nenhuma solicitação ainda. Dispare a primeira acima.</td></tr>
       <?php else: ?>
@@ -105,6 +105,8 @@ $statusLabel = [
 <script>
 (function () {
   const rotaBase = <?= json_encode($chaveRota) ?>;
+  const mostrarColunaOrigem = <?= json_encode((bool) $mostrarColunaOrigem) ?>;
+  const corpoExecucoes = document.getElementById('corpo-execucoes');
   const campoBusca = document.getElementById('campo-cliente-busca');
   const listaClientes = document.getElementById('lista-clientes');
   const campoClienteId = document.getElementById('campo-cliente-id');
@@ -189,5 +191,73 @@ $statusLabel = [
       botaoDisparar.classList.remove('opacity-60');
     }
   });
+
+  // ------------------------------------------------------------------
+  // Atualização automática de "minhas solicitações" - pergunta pro
+  // servidor a cada 8s como estão as execuções do usuário e redesenha
+  // só a tabela, sem recarregar a página. Pausa quando a aba não está
+  // visível pra não gastar requisição à toa.
+  // ------------------------------------------------------------------
+  const statusLabel = {
+    pendente: ['Pendente', 'bg-amber/10 text-amber'],
+    processando: ['Processando', 'bg-info/10 text-info'],
+    concluido: ['Concluído', 'bg-success/10 text-success'],
+    erro: ['Erro', 'bg-danger/10 text-danger'],
+  };
+
+  function escaparHtml(texto) {
+    const div = document.createElement('div');
+    div.textContent = texto ?? '';
+    return div.innerHTML;
+  }
+
+  function formatarData(dataIso) {
+    const data = new Date(dataIso.replace(' ', 'T'));
+    if (isNaN(data.getTime())) return '';
+    const doisDigitos = (n) => String(n).padStart(2, '0');
+    return `${doisDigitos(data.getDate())}/${doisDigitos(data.getMonth() + 1)} ${doisDigitos(data.getHours())}:${doisDigitos(data.getMinutes())}`;
+  }
+
+  function renderizarExecucoes(execucoes) {
+    if (!corpoExecucoes) return;
+
+    if (execucoes.length === 0) {
+      const colunas = mostrarColunaOrigem ? 5 : 4;
+      corpoExecucoes.innerHTML = `<tr><td colspan="${colunas}" class="px-5 py-10 text-center text-tmuted text-sm">Nenhuma solicitação ainda. Dispare a primeira acima.</td></tr>`;
+      return;
+    }
+
+    corpoExecucoes.innerHTML = execucoes.map((e) => {
+      const [rotulo, cor] = statusLabel[e.status] || ['—', 'bg-tmuted/10 text-tmuted'];
+      const colunaOrigem = mostrarColunaOrigem
+        ? `<td class="px-5 py-3.5 text-xs text-tsecondary">${e.origem === 'automatico' ? 'Automático' : 'Manual'}</td>`
+        : '';
+
+      return `
+        <tr class="border-b border-bordsoft last:border-0 hover:bg-elevated/40 transition">
+          <td class="px-5 py-3.5 font-medium">${escaparHtml(e.cliente_nome)}</td>
+          <td class="px-5 py-3.5 text-tsecondary font-mono text-xs">${escaparHtml(e.email_destino)}</td>
+          ${colunaOrigem}
+          <td class="px-5 py-3.5"><span class="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${cor}">${rotulo}</span></td>
+          <td class="px-5 py-3.5 text-tmuted text-xs font-mono">${formatarData(e.criado_em)}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  async function atualizarExecucoes() {
+    if (document.hidden) return;
+
+    try {
+      const resposta = await fetch(`index.php?pagina=${rotaBase}-status`);
+      if (!resposta.ok) return;
+      const dados = await resposta.json();
+      renderizarExecucoes(dados.execucoes || []);
+    } catch (erro) {
+      // falha de rede pontual não precisa incomodar o usuário -
+      // a próxima tentativa em 8s resolve sozinha
+    }
+  }
+
+  setInterval(atualizarExecucoes, 8000);
 })();
 </script>

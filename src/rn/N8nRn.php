@@ -2,6 +2,8 @@
 
 namespace Udflow\rn;
 
+use Udflow\util\LogSistema;
+
 /**
  * Responsável por enviar os dados das automações
  * para os webhooks do n8n.
@@ -11,7 +13,7 @@ class N8nRn
     public function dispararWebhook(?string $webhookUrl, array $payload): bool
     {
         if (empty($webhookUrl)) {
-            error_log('Tentativa de disparar webhook sem URL configurada.');
+            LogSistema::registrar('error', 'Tentativa de disparar webhook sem URL configurada.');
             return false;
         }
 
@@ -43,22 +45,16 @@ class N8nRn
          * O token não é colocado no log.
          */
         if ($erro !== '') {
-            error_log(
-                'Falha ao chamar webhook do n8n' .
-                    ' | URL=' . $webhookUrl .
-                    ' | Erro cURL=' . $erro
-            );
-
+            LogSistema::registrar('error', 'Falha ao chamar webhook do n8n: ' . $erro, null, null, ['url' => $webhookUrl]);
             return false;
         }
 
         if ($codigoHttp < 200 || $codigoHttp >= 300) {
-            error_log(
-                'Webhook do n8n retornou erro' .
-                    ' | URL=' . $webhookUrl .
-                    ' | HTTP=' . $codigoHttp .
-                    ' | Resposta=' . substr((string) $resposta, 0, 2000)
-            );
+            LogSistema::registrar('error', 'Webhook do n8n retornou erro HTTP ' . $codigoHttp, null, null, [
+                'url' => $webhookUrl,
+                'http_status' => $codigoHttp,
+                'resposta' => substr((string) $resposta, 0, 2000),
+            ]);
 
             return false;
         }

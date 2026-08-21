@@ -101,15 +101,15 @@ CREATE TABLE tb_clientes (
 -- pro KPI, então não fazem sentido como coluna de um cadastro
 -- compartilhado pelas 3 automações.
 -- ---------------------------------------------------------------------
-CREATE TABLE tb_clientes_kpi_config (
+CREATE TABLE tb_clientes_config (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     cliente_id      INT UNSIGNED NOT NULL,
     logo_url        VARCHAR(255) NULL,
     cor_primaria    CHAR(7)      NULL,      -- #005c12
     cor_secundaria  CHAR(7)      NULL,
     atualizado_em   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY uk_kpi_config_cliente (cliente_id),
-    CONSTRAINT fk_kpi_config_cliente FOREIGN KEY (cliente_id) REFERENCES tb_clientes (id) ON DELETE CASCADE
+    UNIQUE KEY uk_clientes_config_cliente (cliente_id),
+    CONSTRAINT fk_clientes_config_cliente FOREIGN KEY (cliente_id) REFERENCES tb_clientes (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------
@@ -230,6 +230,22 @@ CREATE TABLE tb_logs_admin (
     criado_em       DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY idx_logs_admin_usuario (usuario_id),
     CONSTRAINT fk_logs_admin_usuario FOREIGN KEY (usuario_id) REFERENCES tb_usuarios (id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------
+-- Log de sistema (erros/exceptions/fatais capturados automaticamente,
+-- ver database/novos_recursos.sql para o histórico dessa migração)
+-- ---------------------------------------------------------------------
+CREATE TABLE tb_logs_sistema (
+    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nivel       VARCHAR(20)  NOT NULL,
+    mensagem    TEXT         NOT NULL,
+    arquivo     VARCHAR(255) NULL,
+    linha       INT          NULL,
+    contexto    TEXT         NULL,
+    criado_em   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_logs_sistema_nivel (nivel),
+    KEY idx_logs_sistema_criado (criado_em)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
