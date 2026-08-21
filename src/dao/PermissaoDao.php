@@ -42,13 +42,13 @@ class PermissaoDao
     /** Automações que o usuário enxerga na sidebar, já na ordem certa */
     public function automacoesVisiveisParaUsuario(int $usuarioId): array
     {
-        $sql = "SELECT a.chave, a.nome, a.icone, a.rota, p.papel_efetivo
+        $sql = "SELECT a.chave, a.nome, a.icone, a.icon_svg, a.rota, p.papel_efetivo
                 FROM vw_permissoes_usuario p
                 JOIN tb_automacoes a ON a.id = p.automacao_id
                 WHERE p.usuario_id = :usuario_id
                   AND p.papel_efetivo IS NOT NULL
                   AND (p.visivel_para_usuarios = 1 OR p.papel_efetivo = 'admin')
-                ORDER BY a.ordem_menu";
+                ORDER BY a.posicao";
 
         $consulta = $this->pdo->prepare($sql);
         $consulta->bindValue(':usuario_id', $usuarioId, PDO::PARAM_INT);
@@ -92,7 +92,7 @@ class PermissaoDao
                 FROM tb_automacoes a
                 LEFT JOIN tb_usuario_automacao ua ON ua.automacao_id = a.id AND ua.usuario_id = :usuario_id
                 WHERE a.ativo = 1
-                ORDER BY a.ordem_menu';
+                ORDER BY a.posicao';
 
         $consulta = $this->pdo->prepare($sql);
         $consulta->bindValue(':usuario_id', $usuarioId, PDO::PARAM_INT);

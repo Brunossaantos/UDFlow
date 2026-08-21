@@ -32,6 +32,7 @@ class AutomacaoRn
         string $nome,
         string $chave,
         string $rota,
+        ?string $iconSvg = null,
         string $webhookUrl = '',
         string $webhookMetodo = 'POST',
         int $posicao = 1,
@@ -46,11 +47,22 @@ class AutomacaoRn
             return ['sucesso' => false, 'mensagem' => 'Já existe uma automação com essa chave.'];
         }
 
+        // "rota" chega como slug puro (ex: "status-ar") - o prefixo
+        // /automacoes/ é sempre o mesmo, então a gente completa aqui
+        // em vez de pedir pra pessoa digitar isso na tela.
+        $rotaCompleta = '/automacoes/' . $rota;
+
+        $rotaExistente = $this->automacaoDao->buscarPorRota($rota);
+        if ($rotaExistente) {
+            return ['sucesso' => false, 'mensagem' => 'Já existe uma automação com essa rota.'];
+        }
+
         // Inserir no banco
         $id = $this->automacaoDao->criar(
             nome: $nome,
             chave: $chave,
-            rota: $rota,
+            rota: $rotaCompleta,
+            iconSvg: $iconSvg,
             webhookUrl: $webhookUrl,
             webhookMetodo: $webhookMetodo,
             posicao: $posicao,
@@ -71,6 +83,7 @@ class AutomacaoRn
     public function atualizar(
         int $id,
         string $nome,
+        ?string $iconSvg = null,
         string $webhookUrl = '',
         string $webhookMetodo = 'POST',
         int $posicao = 1,
@@ -90,6 +103,7 @@ class AutomacaoRn
         $this->automacaoDao->atualizar(
             id: $id,
             nome: $nome,
+            iconSvg: $iconSvg,
             webhookUrl: $webhookUrl,
             webhookMetodo: $webhookMetodo,
             posicao: $posicao,

@@ -1,3 +1,8 @@
+-- Banco NOVO (deploy do zero)? Não precisa rodar este arquivo - o
+-- tb_cronograma do udflow_schema.sql atual já nasce com frequencia/
+-- dias_semana. Isso aqui é só histórico, pra quem tinha um banco de
+-- ANTES dessa migração ter sido aplicada.
+
 ALTER TABLE tb_cronograma
     DROP KEY uk_cronograma,
     ADD COLUMN frequencia ENUM('diaria', 'mensal') NOT NULL DEFAULT 'mensal' AFTER cliente_id,

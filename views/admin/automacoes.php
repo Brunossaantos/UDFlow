@@ -12,11 +12,6 @@ $paginaAtiva = 'admin-automacoes';
 $tituloPagina = 'Administração · Automações';
 require __DIR__ . '/../partials/cabecalho.php';
 
-$icones = [
-    'kpi' => '<path d="M4 20V10M11 20V4M18 20v-7"/>',
-    'mao_obra_batida' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
-    'estadia' => '<rect x="1" y="8" width="12" height="8" rx="1"/><path d="M13 11h4l3 3v2h-7z"/><circle cx="5.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/>',
-];
 ?>
 
 <div class="flex items-center justify-between mb-6">
@@ -36,7 +31,7 @@ $icones = [
   <?php foreach ($automacoes as $automacao): ?>
     <div class="bg-surface border border-bord rounded-xl p-4 flex items-center gap-4">
       <div class="w-10 h-10 rounded-lg bg-flow/10 flex items-center justify-center shrink-0">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1FD8C4" stroke-width="1.8"><?= $icones[$automacao['chave']] ?? '<circle cx="12" cy="12" r="9"/>' ?></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1FD8C4" stroke-width="1.8"><?= $automacao['icon_svg'] ?: '<circle cx="12" cy="12" r="9"/>' ?></svg>
       </div>
       <div class="flex-1 min-w-0">
         <p class="font-medium text-sm"><?= Saida::e($automacao['nome']) ?></p>
@@ -106,8 +101,11 @@ $icones = [
 
       <div>
         <label class="block text-xs font-medium text-tsecondary mb-1.5">Rota (URL amigável)</label>
-        <input type="text" name="rota" placeholder="ex: kpi-relatorio" pattern="[a-z-]+" required class="w-full bg-surface border border-bord rounded-lg px-3 py-2.5 text-sm glow-focus font-mono">
-        <p class="text-[10px] text-tmuted mt-1">Só letras minúsculas e hífen</p>
+        <div class="flex items-stretch">
+          <span class="flex items-center px-3 rounded-l-lg border border-r-0 border-bord bg-elevated text-tmuted text-sm font-mono">/automacoes/</span>
+          <input type="text" name="rota" placeholder="status-ar" pattern="[a-z-]+" required class="w-full bg-surface border border-bord rounded-l-none rounded-r-lg px-3 py-2.5 text-sm glow-focus font-mono">
+        </div>
+        <p class="text-[10px] text-tmuted mt-1">Só letras minúsculas e hífen - o "/automacoes/" já vem incluso, não precisa digitar</p>
       </div>
 
       <div class="grid grid-cols-2 gap-4">
@@ -128,10 +126,17 @@ $icones = [
         </div>
       </div>
 
+      <div>
+        <label class="block text-xs font-medium text-tsecondary mb-1.5">Ícone (SVG)</label>
+        <input type="text" name="icon_svg" placeholder='ex: &lt;path d="M4 20V10M11 20V4M18 20v-7"/&gt;' class="w-full bg-surface border border-bord rounded-lg px-3 py-2.5 text-sm glow-focus font-mono text-[11px]">
+        <p class="text-[10px] text-tmuted mt-1">Conteúdo interno de um &lt;svg viewBox="0 0 24 24"&gt; (path/circle/rect) - aparece na sidebar e no menu de configuração. Deixa em branco pra usar o ícone genérico.</p>
+      </div>
+
       <div class="grid grid-cols-3 gap-4">
         <div>
           <label class="block text-xs font-medium text-tsecondary mb-1.5">Posição (ordem)</label>
-          <input type="number" name="posicao" value="1" min="1" max="99" class="w-full bg-surface border border-bord rounded-lg px-3 py-2.5 text-sm glow-focus">
+          <input type="number" name="posicao" value="10" min="1" max="9999" step="10" class="w-full bg-surface border border-bord rounded-lg px-3 py-2.5 text-sm glow-focus">
+          <p class="text-[10px] text-tmuted mt-1">Controla a ordem na sidebar - use passos de 10 (10, 20, 30...) pra sobrar espaço de inserir no meio depois</p>
         </div>
 
         <div>

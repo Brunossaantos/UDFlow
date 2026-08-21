@@ -25,32 +25,27 @@ class AutomacaoController
 
     public function __construct()
     {
-        $this->chave = $this->obterChaveViaRota();
-
-        $automacao = (new AutomacaoDao())->buscarPorChave($this->chave);
-
-        $this->automacao = $automacao ?? throw new \Exception("Automação '{$this->chave}' não encontrada");
+        $this->automacao = $this->obterAutomacaoViaRota();
+        $this->chave = $this->automacao['chave'];
     }
 
     /**
-     * Obtém a chave da automação pela rota atual (?pagina=kpi, etc)
+     * Descobre qual automação é pela rota atual (?pagina=kpi,
+     * ?pagina=status-ar, etc), buscando direto em tb_automacoes -
+     * nenhuma automação nova precisa de código pra ficar acessível,
+     * só cadastrar pela tela de Automações (o "rota" que a pessoa
+     * digita lá é exatamente esse slug).
      */
-    private function obterChaveViaRota(): string
+    private function obterAutomacaoViaRota(): array
     {
         $pagina = $_GET['pagina'] ?? '';
 
         // Remover sufixos de ação (-clientes, -enviar, -status)
-        $chaveBase = preg_replace('/-clientes$|-enviar$|-status$/', '', $pagina);
-        
-        // Mapear rotas alternativas
-        $mapeamento = [
-            'kpi' => 'kpi',
-            'estadia' => 'estadia',
-            'programacao-semanal' => 'programacao_semanal',
-            'relatorio-avarias' => 'relatorio_avarias',
-        ];
-        
-        return $mapeamento[$chaveBase] ?? throw new \Exception("Rota '{$pagina}' não mapeada para automação");
+        $rotaBase = preg_replace('/-clientes$|-enviar$|-status$/', '', $pagina);
+
+        $automacao = (new AutomacaoDao())->buscarPorRota($rotaBase);
+
+        return $automacao ?? throw new \Exception("Rota '{$pagina}' não mapeada para nenhuma automação ativa.");
     }
 
     public function tela(): void

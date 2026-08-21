@@ -14,6 +14,7 @@ use Udflow\util\Saida;
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trocar senha · UDFlow</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='12' fill='%230A0E1A'/%3E%3Ccircle cx='10' cy='38' r='5' fill='%231FD8C4'/%3E%3Ccircle cx='28' cy='14' r='5' fill='%231FD8C4' opacity='.85'/%3E%3Ccircle cx='46' cy='38' r='5' fill='%230EA394'/%3E%3Cpath d='M10 38C18 38 20 14 28 14S38 38 46 38' fill='none' stroke='%231FD8C4' stroke-width='2' opacity='.5'/%3E%3C/svg%3E">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">

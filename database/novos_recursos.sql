@@ -1,3 +1,13 @@
+-- =====================================================================
+-- HISTÓRICO DE MIGRAÇÕES - já incorporadas no udflow_schema.sql
+--
+-- Banco NOVO (deploy do zero)? Não precisa rodar nada deste arquivo -
+-- todo bloco abaixo já está refletido no udflow_schema.sql atual.
+-- Este arquivo só serve pra atualizar um banco que já existia ANTES
+-- de cada mudança (ex: o banco de produção antes de vocês subirem a
+-- versão que criou o Log de sistema). Fica como registro histórico.
+-- =====================================================================
+
 -- ---------------------------------------------------------------------
 -- Log de sistema
 -- Guarda erros/exceptions/fatais capturados automaticamente pelos
@@ -39,3 +49,20 @@ ALTER TABLE tb_clientes_config
 UPDATE tb_automacao_payload_regras
 SET configuracao = REPLACE(configuracao, 'tb_clientes_kpi_config', 'tb_clientes_config')
 WHERE configuracao LIKE '%tb_clientes_kpi_config%';
+
+-- ---------------------------------------------------------------------
+-- Roteamento dinâmico de automações
+-- Antes, só KPI/Estadia/Programação Semanal/Relatório de Avarias
+-- funcionavam de verdade - qualquer automação nova cadastrada pela
+-- tela de Automações dava "Página não encontrada", porque as rotas
+-- eram fixas em config/rotas.php e o AutomacaoController tinha um
+-- mapeamento de chave hardcoded. Agora o index.php resolve a rota na
+-- hora, buscando direto em tb_automacoes.rota - qualquer automação
+-- nova já funciona sem precisar mexer em código.
+--
+-- Isso exige que a coluna "rota" esteja sempre em
+-- "/automacoes/{slug-com-hifen}" - a linha do Relatório de Avarias
+-- foi cadastrada com underscore (inconsistente com a própria rota
+-- que já funcionava, "relatorio-avarias"). Corrige aqui.
+-- ---------------------------------------------------------------------
+UPDATE tb_automacoes SET rota = '/automacoes/relatorio-avarias' WHERE chave = 'relatorio_avarias';

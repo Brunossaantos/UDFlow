@@ -49,6 +49,7 @@ class AdminAutomacaoController
         $nome = trim($_POST['nome'] ?? '');
         $chave = trim($_POST['chave'] ?? '');
         $rota = trim($_POST['rota'] ?? '');
+        $iconSvg = trim($_POST['icon_svg'] ?? '') ?: null;
         $webhookUrl = trim($_POST['webhook_url'] ?? '');
         $webhookMetodo = trim($_POST['webhook_metodo'] ?? 'POST');
         $posicao = (int) ($_POST['posicao'] ?? 1);
@@ -75,6 +76,7 @@ class AdminAutomacaoController
             nome: $nome,
             chave: $chave,
             rota: $rota,
+            iconSvg: $iconSvg,
             webhookUrl: $webhookUrl,
             webhookMetodo: $webhookMetodo,
             posicao: $posicao,
@@ -100,6 +102,7 @@ class AdminAutomacaoController
 
         $id = (int) ($_POST['id'] ?? 0);
         $nome = trim($_POST['nome'] ?? '');
+        $iconSvg = trim($_POST['icon_svg'] ?? '') ?: null;
         $webhookUrl = trim($_POST['webhook_url'] ?? '');
         $webhookMetodo = trim($_POST['webhook_metodo'] ?? 'POST');
         $posicao = (int) ($_POST['posicao'] ?? 1);
@@ -118,6 +121,7 @@ class AdminAutomacaoController
         $resultado = (new AutomacaoRn())->atualizar(
             id: $id,
             nome: $nome,
+            iconSvg: $iconSvg,
             webhookUrl: $webhookUrl,
             webhookMetodo: $webhookMetodo,
             posicao: $posicao,

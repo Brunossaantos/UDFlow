@@ -26,12 +26,6 @@ $ehAdminDeAlgumaAutomacao = ControleAcesso::usuarioEhSuperAdmin()
 $paginaAtiva = $paginaAtiva ?? '';
 $tituloPagina = $tituloPagina ?? 'UDFlow';
 
-$iconesPorAutomacao = [
-  'kpi' => '<path d="M4 20V10M11 20V4M18 20v-7"/>',
-  'programacao_semanal' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
-  'estadia' => '<rect x="1" y="8" width="12" height="8" rx="1"/><path d="M13 11h4l3 3v2h-7z"/><circle cx="5.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/>',
-  'relatorio_avarias' => '<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4M12 17h.01"/>',
-];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -40,6 +34,7 @@ $iconesPorAutomacao = [
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= Saida::e($tituloPagina) ?> · UDFlow</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='12' fill='%230A0E1A'/%3E%3Ccircle cx='10' cy='38' r='5' fill='%231FD8C4'/%3E%3Ccircle cx='28' cy='14' r='5' fill='%231FD8C4' opacity='.85'/%3E%3Ccircle cx='46' cy='38' r='5' fill='%230EA394'/%3E%3Cpath d='M10 38C18 38 20 14 28 14S38 38 46 38' fill='none' stroke='%231FD8C4' stroke-width='2' opacity='.5'/%3E%3C/svg%3E">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -167,9 +162,10 @@ $iconesPorAutomacao = [
         <?php if (!empty($automacoesDoMenu)): ?>
           <p class="px-3 pt-4 pb-1.5 text-[10px] font-semibold tracking-widest text-tmuted">AUTOMAÇÕES</p>
           <?php foreach ($automacoesDoMenu as $menuAutomacao): ?>
-            <a href="index.php?pagina=<?= Saida::e(str_replace('_', '-', $menuAutomacao['chave'])) ?>"
-              class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === $menuAutomacao['chave'] ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><?= $iconesPorAutomacao[$menuAutomacao['chave']] ?? '<circle cx="12" cy="12" r="9"/>' ?></svg>
+            <?php $rotaSlug = str_replace('/automacoes/', '', $menuAutomacao['rota']); ?>
+            <a href="index.php?pagina=<?= Saida::e($rotaSlug) ?>"
+              class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === $rotaSlug ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><?= $menuAutomacao['icon_svg'] ?: '<circle cx="12" cy="12" r="9"/>' ?></svg>
               <?= Saida::e($menuAutomacao['nome']) ?>
             </a>
           <?php endforeach; ?>
