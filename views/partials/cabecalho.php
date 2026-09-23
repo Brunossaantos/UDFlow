@@ -34,10 +34,13 @@ $tituloPagina = $tituloPagina ?? 'UDFlow';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= Saida::e($tituloPagina) ?> · UDFlow</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='12' fill='%230A0E1A'/%3E%3Ccircle cx='10' cy='38' r='5' fill='%231FD8C4'/%3E%3Ccircle cx='28' cy='14' r='5' fill='%231FD8C4' opacity='.85'/%3E%3Ccircle cx='46' cy='38' r='5' fill='%230EA394'/%3E%3Cpath d='M10 38C18 38 20 14 28 14S38 38 46 38' fill='none' stroke='%231FD8C4' stroke-width='2' opacity='.5'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='12' fill='%230A0E1A'/%3E%3Ccircle cx='10' cy='38' r='5' fill='%231FD8C4'/%3E%3Ccircle cx='28' cy='14' r='5' fill='%231FD8C4' opacity='.85'/%3E%3Ccircle cx='46' cy='38' r='5' fill='%230EA394'/%3E%3Cpath d='M10 38C18 38 20 14 28 14S38 38 46 38' fill='none' stroke='%231FD8C4' stroke-width='2' opacity='.5'/%3E%3C/svg%3E">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
@@ -137,22 +140,28 @@ $tituloPagina = $tituloPagina ?? 'UDFlow';
 
   <div class="min-h-screen flex">
 
-    <aside id="sidebar" class="fixed lg:sticky top-0 h-screen w-64 bg-elevated border-r border-bord flex flex-col z-40 -translate-x-full lg:translate-x-0 transition-transform">
+    <aside id="sidebar"
+      class="fixed lg:sticky top-0 h-screen w-64 bg-elevated border-r border-bord flex flex-col z-40 -translate-x-full lg:translate-x-0 transition-transform">
       <div class="flex items-center gap-2.5 px-5 h-16 border-b border-bord shrink-0">
         <svg width="26" height="26" viewBox="0 0 56 56">
           <circle cx="10" cy="38" r="5" fill="#1FD8C4" />
           <circle cx="28" cy="14" r="5" fill="#1FD8C4" opacity="0.85" />
           <circle cx="46" cy="38" r="5" fill="#0EA394" />
-          <path d="M 10 38 C 18 38, 20 14, 28 14 S 38 38, 46 38" fill="none" stroke="#1FD8C4" stroke-width="2" opacity="0.5" />
+          <path d="M 10 38 C 18 38, 20 14, 28 14 S 38 38, 46 38" fill="none" stroke="#1FD8C4" stroke-width="2"
+            opacity="0.5" />
         </svg>
         <span class="font-display font-semibold text-[15px]">UD<span class="text-flow">Flow</span></span>
-        <button onclick="document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('hidden')" class="ml-auto lg:hidden text-tsecondary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button
+          onclick="document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('hidden')"
+          class="ml-auto lg:hidden text-tsecondary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
             <path d="M6 6l12 12M18 6L6 18" />
           </svg></button>
       </div>
 
       <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
-        <a href="index.php?pagina=home" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'home' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+        <a href="index.php?pagina=home"
+          class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'home' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10" />
           </svg>
@@ -165,22 +174,27 @@ $tituloPagina = $tituloPagina ?? 'UDFlow';
             <?php $rotaSlug = str_replace('/automacoes/', '', $menuAutomacao['rota']); ?>
             <a href="index.php?pagina=<?= Saida::e($rotaSlug) ?>"
               class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === $rotaSlug ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><?= $menuAutomacao['icon_svg'] ?: '<circle cx="12" cy="12" r="9"/>' ?></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.8"><?= $menuAutomacao['icon_svg'] ?: '<circle cx="12" cy="12" r="9"/>' ?></svg>
               <?= Saida::e($menuAutomacao['nome']) ?>
             </a>
           <?php endforeach; ?>
         <?php endif; ?>
 
         <?php if ($ehAdminDeAlgumaAutomacao): ?>
-          <p class="px-3 pt-5 pb-1.5 text-[10px] font-semibold tracking-widest text-tmuted flex items-center gap-1.5">ADMINISTRAÇÃO <span class="bg-amber/15 text-amber text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wide">ADMIN</span></p>
+          <p class="px-3 pt-5 pb-1.5 text-[10px] font-semibold tracking-widest text-tmuted flex items-center gap-1.5">
+            ADMINISTRAÇÃO <span
+              class="bg-amber/15 text-amber text-[9px] px-1.5 py-0.5 rounded font-bold tracking-wide">ADMIN</span></p>
 
-          <a href="index.php?pagina=admin-clientes" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-clientes' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+          <a href="index.php?pagina=admin-clientes"
+            class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-clientes' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M4 21V7l8-4 8 4v14M9 21v-6h6v6" />
             </svg>
             Clientes
           </a>
-          <a href="index.php?pagina=admin-cronograma" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-cronograma' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+          <a href="index.php?pagina=admin-cronograma"
+            class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-cronograma' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <rect x="3" y="4" width="18" height="17" rx="2" />
               <path d="M3 9h18M8 2v4M16 2v4" />
@@ -190,14 +204,16 @@ $tituloPagina = $tituloPagina ?? 'UDFlow';
             Cronograma
           </a>
           <?php if (ControleAcesso::usuarioEhSuperAdmin()): ?>
-            <a href="index.php?pagina=admin-usuarios" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-usuarios' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+            <a href="index.php?pagina=admin-usuarios"
+              class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-usuarios' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <circle cx="9" cy="8" r="3.2" />
                 <path d="M2.5 19c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 8.2a3 3 0 110 5.8M21.5 19c0-2.9-2-5-5-5.6" />
               </svg>
               Usuários e permissões
             </a>
-            <a href="index.php?pagina=admin-automacoes" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-automacoes' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+            <a href="index.php?pagina=admin-automacoes"
+              class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-automacoes' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <rect x="3" y="3" width="7" height="7" rx="1.5" />
                 <rect x="14" y="3" width="7" height="7" rx="1.5" />
@@ -206,22 +222,27 @@ $tituloPagina = $tituloPagina ?? 'UDFlow';
               </svg>
               Automações
             </a>
-            <a href="index.php?pagina=admin-logs-sistema" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-logs-sistema' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+            <a href="index.php?pagina=admin-logs-sistema"
+              class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-logs-sistema' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M10.29 3.86l-8.18 14.14A1.5 1.5 0 003.4 20.5h17.2a1.5 1.5 0 001.29-2.5L13.71 3.86a1.5 1.5 0 00-2.42 0z" />
+                <path
+                  d="M10.29 3.86l-8.18 14.14A1.5 1.5 0 003.4 20.5h17.2a1.5 1.5 0 001.29-2.5L13.71 3.86a1.5 1.5 0 00-2.42 0z" />
                 <path d="M12 9v4M12 17h.01" />
               </svg>
               Logs do sistema
             </a>
-            <a href="index.php?pagina=admin-automacao-config" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-automacao-config' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+            <a href="index.php?pagina=admin-automacao-config"
+              class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-automacao-config' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
               <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <circle cx="12" cy="12" r="1.5" />
-                <path d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.98 2.98l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m2.98-2.98l4.24-4.24M19.78 19.78l-4.24-4.24m-2.98-2.98l-4.24-4.24" />
+                <path
+                  d="M12 1v6m0 6v6M4.22 4.22l4.24 4.24m2.98 2.98l4.24 4.24M1 12h6m6 0h6M4.22 19.78l4.24-4.24m2.98-2.98l4.24-4.24M19.78 19.78l-4.24-4.24m-2.98-2.98l-4.24-4.24" />
               </svg>
               Configurar Automações
             </a>
           <?php endif; ?>
-          <a href="index.php?pagina=admin-logs" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-logs' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
+          <a href="index.php?pagina=admin-logs"
+            class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition <?= $paginaAtiva === 'admin-logs' ? 'bg-flow/10 text-flow' : 'text-tsecondary hover:text-tprimary hover:bg-surface' ?>">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M9 2H4v5M9 22H4v-5M15 2h5v5M15 22h5v-5M3 12h18M3 8h18M3 16h18" />
             </svg>
@@ -232,12 +253,14 @@ $tituloPagina = $tituloPagina ?? 'UDFlow';
 
       <div class="border-t border-bord p-3 shrink-0">
         <div class="flex items-center gap-2.5 px-2 py-2">
-          <div class="w-8 h-8 rounded-full grad-flow flex items-center justify-center text-[11px] font-bold text-[#04342C] shrink-0">
+          <div
+            class="w-8 h-8 rounded-full grad-flow flex items-center justify-center text-[11px] font-bold text-[#04342C] shrink-0">
             <?= Saida::e(mb_strtoupper(mb_substr($usuarioSessao['nome'] ?? '?', 0, 1))) ?>
           </div>
           <div class="min-w-0 flex-1">
             <p class="text-[13px] font-medium truncate"><?= Saida::e($usuarioSessao['nome'] ?? '') ?></p>
-            <p class="text-[11px] text-tmuted truncate"><?= ControleAcesso::usuarioEhSuperAdmin() ? 'Super administrador' : 'Usuário' ?></p>
+            <p class="text-[11px] text-tmuted truncate">
+              <?= ControleAcesso::usuarioEhSuperAdmin() ? 'Super administrador' : 'Usuário' ?></p>
           </div>
           <a href="index.php?pagina=sair" title="Sair" class="text-tmuted hover:text-danger transition shrink-0">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -248,20 +271,32 @@ $tituloPagina = $tituloPagina ?? 'UDFlow';
       </div>
     </aside>
 
-    <div id="sidebar-overlay" onclick="document.getElementById('sidebar').classList.add('-translate-x-full'); this.classList.add('hidden')" class="hidden fixed inset-0 bg-black/50 z-30 lg:hidden"></div>
+    <div id="sidebar-overlay"
+      onclick="document.getElementById('sidebar').classList.add('-translate-x-full'); this.classList.add('hidden')"
+      class="hidden fixed inset-0 bg-black/50 z-30 lg:hidden"></div>
 
     <main class="flex-1 min-w-0">
-      <header class="h-16 border-b border-bord flex items-center gap-3 px-5 lg:px-8 sticky top-0 bg-bg/90 backdrop-blur z-20">
-        <button onclick="document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('sidebar-overlay').classList.remove('hidden')" class="lg:hidden text-tsecondary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <header
+        class="h-16 border-b border-bord flex items-center gap-3 px-5 lg:px-8 sticky top-0 bg-bg/90 backdrop-blur z-20">
+        <button
+          onclick="document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('sidebar-overlay').classList.remove('hidden')"
+          class="lg:hidden text-tsecondary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.8">
             <path d="M4 6h16M4 12h16M4 18h16" />
           </svg></button>
-        <h2 class="font-display font-semibold text-[15px]"><?= Saida::e($tituloPagina) ?></h2>
+        <h2 class="font-display font-semibold text-[15px]">
+          <?= Saida::e($tituloPagina) ?>
+        </h2>
+
+        <img src="https://udlog.online/imagens/udlog1.png" alt="UDLOG"
+          class="ml-auto h-10 w-auto max-w-[210px] object-contain">
       </header>
 
       <div class="p-5 lg:p-8 max-w-6xl mx-auto">
 
         <?php if (!empty($_SESSION['flash_sucesso'])): ?>
-          <div class="mb-5 flex items-center gap-2.5 bg-success/10 border border-success/25 text-success text-sm rounded-lg px-4 py-3">
+          <div
+            class="mb-5 flex items-center gap-2.5 bg-success/10 border border-success/25 text-success text-sm rounded-lg px-4 py-3">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M20 6L9 17l-5-5" />
             </svg>
@@ -271,7 +306,8 @@ $tituloPagina = $tituloPagina ?? 'UDFlow';
         <?php endif; ?>
 
         <?php if (!empty($_SESSION['flash_erro'])): ?>
-          <div class="mb-5 flex items-center gap-2.5 bg-danger/10 border border-danger/25 text-danger text-sm rounded-lg px-4 py-3">
+          <div
+            class="mb-5 flex items-center gap-2.5 bg-danger/10 border border-danger/25 text-danger text-sm rounded-lg px-4 py-3">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 8v5M12 16h.01" />
